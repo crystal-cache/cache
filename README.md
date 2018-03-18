@@ -2,6 +2,10 @@
 
 A key/value store where pairs can expire after a specified interval
 
+[![Build Status](http://img.shields.io/travis/mamantoha/cache.svg?style=flat)](https://travis-ci.org/mamantoha/cache)
+[![GitHub release](https://img.shields.io/github/release/mamantoha/cache.svg)](https://github.com/mamantoha/cache/releases)
+[![License](https://img.shields.io/github/license/mamantoha/cache.svg)](https://github.com/mamantoha/cache/blob/master/LICENSE)
+
 ## Installation
 
 Add this to your application's `shard.yml`:
@@ -17,9 +21,9 @@ dependencies:
 ### Available stores
 
 * [x] Memory
-* [] File
-* [] Redis
-* [] MemcahedStore
+* [ ] File
+* [ ] Redis
+* [ ] MemcahedStore
 
 ```crystal
 require "cache"
