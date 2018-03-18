@@ -3,7 +3,7 @@ require "./spec_helper"
 describe Cache do
   context Cache::MemoryStore do
     it "initialize" do
-      (Cache::MemoryStore(String, String).new(12.hours)).should be_a(Cache::Store(String, String))
+      (Cache::MemoryStore(String, String).new(expires_in: 12.hours)).should be_a(Cache::Store(String, String))
     end
 
     it "write to cache first time" do

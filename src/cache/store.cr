@@ -9,7 +9,7 @@ module Cache
   # end
   # ```
   abstract struct Store(K, V)
-    def initialize(@expire_time : Time::Span)
+    def initialize(@expires_in : Time::Span)
       @cache = {} of K => Entry(V)
     end
 
@@ -23,9 +23,9 @@ module Cache
 
   struct Entry(V)
     getter value
-    getter expire_time
+    getter expires_in
 
-    def initialize(@value : V, @expire_time : Time)
+    def initialize(@value : V, @expires_in : Time)
     end
   end
 end

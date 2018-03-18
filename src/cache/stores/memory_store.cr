@@ -8,13 +8,13 @@ module Cache
       now = Time.utc_now
       entry = @cache[key]?
 
-      if entry && now < entry.expire_time
+      if entry && now < entry.expires_in
         return entry.value
       end
 
       value = yield
 
-      @cache[key] = Entry.new(value, now + @expire_time)
+      @cache[key] = Entry.new(value, now + @expires_in)
       value
     end
   end
