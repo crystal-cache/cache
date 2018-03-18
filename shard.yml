@@ -1,0 +1,9 @@
+name: cache
+version: 0.1.0
+
+authors:
+  - Anton Maminov <anton.linux@gmail.com>
+
+crystal: 0.24.2
+
+license: MIT
