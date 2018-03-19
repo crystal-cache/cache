@@ -4,6 +4,11 @@ version: 0.0.2
 authors:
   - Anton Maminov <anton.linux@gmail.com>
 
+dependencies:
+  redis:
+    github: stefanwille/crystal-redis
+    version: ~> 1.9.0
+
 crystal: 0.24.2
 
 license: MIT

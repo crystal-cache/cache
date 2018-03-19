@@ -21,17 +21,28 @@ dependencies:
 ### Available stores
 
 * [x] Memory
-* [ ] File
-* [ ] Redis
-* [ ] MemcahedStore
+* [x] Redis
+* [ ] Memcached
 
 ```crystal
 require "cache"
 ```
 
+### Memory
+
 ```crystal
 # Set all values to expire after one minute.
 cache = Cache::MemoryStore(String, String).new(expires_in: 1.minute)
+cache.fetch("today") do
+  Time.now.day_of_week
+end
+```
+
+### Redis
+
+```crystal
+# Set all values to expire after one minute.
+cache = Cache::RedisStore(String, String).new(expires_in: 1.minute)
 cache.fetch("today") do
   Time.now.day_of_week
 end

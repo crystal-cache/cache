@@ -1,1 +1,4 @@
 language: crystal
+
+services:
+  - redis-server
