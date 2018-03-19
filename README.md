@@ -22,7 +22,7 @@ dependencies:
 
 * [x] Memory
 * [x] Redis
-* [ ] Memcached
+* [ ] Memcached ([#2](https://github.com/mamantoha/cache/issues/2))
 
 ```crystal
 require "cache"
