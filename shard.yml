@@ -1,8 +1,8 @@
 name: cache
-version: 0.0.3
+version: 0.0.4
 
 authors:
-  - Anton Maminov <anton.linux@gmail.com>
+  - Anton Maminov <anton.maminov@gmail.com>
 
 dependencies:
   redis:
