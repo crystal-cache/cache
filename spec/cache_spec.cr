@@ -35,5 +35,30 @@ describe Cache do
       value.should eq("baz")
     end
 
+    it "write" do
+      store = Cache::MemoryStore(String, String).new(12.hours)
+      store.write("foo", "bar", expires_in: 1.minute)
+
+      value = store.fetch("foo") { "bar" }
+      value.should eq("bar")
+    end
+
+    it "read" do
+      store = Cache::MemoryStore(String, String).new(12.hours)
+      store.write("foo", "bar")
+
+      value = store.read("foo")
+      value.should eq("bar")
+    end
+
+    it "Set a lower expires_in value for one entry on write" do
+      store = Cache::MemoryStore(String, String).new(12.hours)
+      store.write("foo", "bar", expires_in: 1.second)
+
+      sleep 2
+
+      value = store.read("foo")
+      value.should eq(nil)
+    end
   end
 end
