@@ -51,11 +51,11 @@ describe Cache do
       value.should eq("bar")
     end
 
-    it "Set a lower expires_in value for one entry on write" do
+    it "set a custom expires_in value for one entry on write" do
       store = Cache::MemoryStore(String, String).new(12.hours)
       store.write("foo", "bar", expires_in: 1.second)
 
-      sleep 2
+      sleep 1
 
       value = store.read("foo")
       value.should eq(nil)
