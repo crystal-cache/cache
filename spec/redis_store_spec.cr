@@ -34,7 +34,7 @@ describe Cache do
       value = store.fetch("foo") { "bar" }
       value.should eq("bar")
 
-      sleep 1
+      sleep 2
 
       value = store.fetch("foo") { "baz" }
       value.should eq("baz")
@@ -60,7 +60,7 @@ describe Cache do
       store = Cache::RedisStore(String, String).new(12.hours)
       store.write("foo", "bar", expires_in: 1.second)
 
-      sleep 1
+      sleep 2
 
       value = store.read("foo")
       value.should eq(nil)
