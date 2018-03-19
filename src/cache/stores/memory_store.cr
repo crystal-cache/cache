@@ -43,12 +43,4 @@ module Cache
       value
     end
   end
-
-  struct Entry(V)
-    getter value
-    getter expires_in
-
-    def initialize(@value : V, @expires_in : Time)
-    end
-  end
 end
