@@ -11,6 +11,11 @@ describe Cache do
       (Cache::RedisStore(String, String).new(expires_in: 12.hours)).should be_a(Cache::Store(String, String))
     end
 
+    it "initialize with redis" do
+      redis = Redis.new(host: "localhost", port: 6379)
+      (Cache::RedisStore(String, String).new(expires_in: 12.hours, cache: redis)).should be_a(Cache::Store(String, String))
+    end
+
     it "write to cache first time" do
       store = Cache::RedisStore(String, String).new(12.hours)
 
@@ -20,6 +25,17 @@ describe Cache do
 
     it "fetch from cache" do
       store = Cache::RedisStore(String, String).new(12.hours)
+
+      value = store.fetch("foo") { "bar" }
+      value.should eq("bar")
+
+      value = store.fetch("foo") { "baz" }
+      value.should eq("bar")
+    end
+
+    it "fetch from cache with custom Redis" do
+      redis = Redis.new(host: "localhost", port: 6379)
+      store = Cache::RedisStore(String, String).new(expires_in: 12.hours, cache: redis)
 
       value = store.fetch("foo") { "bar" }
       value.should eq("bar")

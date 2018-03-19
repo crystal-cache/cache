@@ -48,6 +48,17 @@ cache.fetch("today") do
 end
 ```
 
+This assumes Redis was started with a default configuration, and is listening on localhost, port 6379.
+
+You can connect to `Redis` by instantiating the Redis class.
+
+If you need to connect to a remote server or a different port, try:
+
+```crystal
+redis = Redis.new(host: "10.0.1.1", port: 6380, password: "my-secret-pw", database: "my-database")
+cache = Cache::RedisStore(String, String).new(expires_in: 1.minute, cache: redis)
+```
+
 ## Contributing
 
 1. Fork it ( https://github.com/mamantoha/cache/fork )
