@@ -20,6 +20,7 @@ dependencies:
 
 ### Available stores
 
+* [x] Null store
 * [x] Memory
 * [x] Redis
 * [ ] Memcached ([#2](https://github.com/mamantoha/cache/issues/2))
@@ -30,8 +31,10 @@ require "cache"
 
 ### Memory
 
+A cache store implementation which stores everything into memory in the
+same process.
+
 ```crystal
-# Set all values to expire after one minute.
 cache = Cache::MemoryStore(String, String).new(expires_in: 1.minute)
 cache.fetch("today") do
   Time.now.day_of_week
@@ -40,8 +43,9 @@ end
 
 ### Redis
 
+A cache store implementation which stores data in Redis.
+
 ```crystal
-# Set all values to expire after one minute.
 cache = Cache::RedisStore(String, String).new(expires_in: 1.minute)
 cache.fetch("today") do
   Time.now.day_of_week
@@ -57,6 +61,18 @@ If you need to connect to a remote server or a different port, try:
 ```crystal
 redis = Redis.new(host: "10.0.1.1", port: 6380, password: "my-secret-pw", database: "my-database")
 cache = Cache::RedisStore(String, String).new(expires_in: 1.minute, cache: redis)
+```
+### Null store
+
+A cache store implementation which doesn't actually store anything. Useful in
+development and test environments where you don't want caching turned on but
+need to go through the caching interface.
+
+```crystal
+cache = Cache::NullStore(String, String).new(expires_in: 1.minute)
+cache.fetch("today") do
+  Time.now.day_of_week
+end
 ```
 
 ## Contributing
