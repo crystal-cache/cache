@@ -35,13 +35,13 @@ module Cache
       @cache.get(key)
     end
 
-    def fetch(key : K, &block)
+    def fetch(key : K, *, expires_in = @expires_in, &block)
       value = read(key)
       return value if value
 
       value = yield
 
-      write(key, value)
+      write(key, value, expires_in: expires_in)
       value
     end
   end

@@ -56,6 +56,30 @@ describe Cache do
       value.should eq("baz")
     end
 
+    it "fetch with expires_in from cache" do
+      store = Cache::RedisStore(String, String).new(1.seconds)
+
+      value = store.fetch("foo", expires_in: 1.hours) { "bar" }
+      value.should eq("bar")
+
+      sleep 2
+
+      value = store.fetch("foo") { "baz" }
+      value.should eq("bar")
+    end
+
+    it "don't fetch with expires_in from cache if expires" do
+      store = Cache::RedisStore(String, String).new(12.hours)
+
+      value = store.fetch("foo", expires_in: 1.seconds) { "bar" }
+      value.should eq("bar")
+
+      sleep 2
+
+      value = store.fetch("foo") { "baz" }
+      value.should eq("baz")
+    end
+
     it "write" do
       store = Cache::RedisStore(String, String).new(12.hours)
       store.write("foo", "bar", expires_in: 1.minute)
