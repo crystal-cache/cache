@@ -16,6 +16,58 @@ dependencies:
     github: mamantoha/cache
 ```
 
+## Example
+
+Caching means to store content generated during the request-response cycle
+and to reuse it when responding to similar requests.
+
+The first time the result is returned from the query it is stored in the query cache (in memory)
+and the second time it's pulled from memory.
+
+However, it's important to note that Redis cache value must be string.
+But memory cache can store any serializable Crystal objects.
+
+Next example show how to get a single Github user and cache the result in Redis.
+
+```crystal
+require "http/client"
+require "json"
+require "cache"
+
+cache = Cache::MemoryStore(String, String).new(expires_in: 30.minutes)
+github_client = HTTP::Client.new(URI.parse("https://api.github.com"))
+
+# Define how an object is mapped to JSON.
+class User
+  JSON.mapping({
+    login: String,
+    id:    Int32,
+  })
+end
+
+username = "crystal-lang"
+
+# First request.
+# Getting data from Github and write it to cache.
+user_json = cache.fetch("user_#{username}") do
+  response = github_client.get("/users/#{username}")
+  User.from_json(response.body).to_json
+end
+
+user = User.from_json(user_json)
+user.id # => 6539796
+
+# Second request.
+# Getting data from cache.
+user_json = cache.fetch("user_#{username}") do
+  response = github_client.get("/users/#{username}")
+  User.from_json(response.body).to_json
+end
+
+user = User.from_json(user_json)
+user.id # => 6539796
+```
+
 ## Usage
 
 ### Available stores
