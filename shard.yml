@@ -1,5 +1,5 @@
 name: cache
-version: 0.0.5
+version: 0.0.6
 
 authors:
   - Anton Maminov <anton.maminov@gmail.com>
@@ -9,6 +9,6 @@ dependencies:
     github: stefanwille/crystal-redis
     version: ~> 1.10.0
 
-crystal: 0.24.2
+crystal: 0.25.0
 
 license: MIT
