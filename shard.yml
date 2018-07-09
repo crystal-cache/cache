@@ -1,5 +1,5 @@
 name: cache
-version: 0.0.6
+version: 0.0.7
 
 authors:
   - Anton Maminov <anton.maminov@gmail.com>
@@ -10,7 +10,8 @@ dependencies:
     version: ~> 1.10.0
   memcached:
     github: comandeo/crystal-memcached
+    version: ~> 0.2.2
 
-crystal: 0.25.0
+crystal: 0.25.1
 
 license: MIT
