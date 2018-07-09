@@ -2,3 +2,4 @@ language: crystal
 
 services:
   - redis-server
+  - memcached

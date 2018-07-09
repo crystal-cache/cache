@@ -75,7 +75,7 @@ user.id # => 6539796
 * [x] Null store
 * [x] Memory
 * [x] Redis
-* [ ] Memcached ([#2](https://github.com/mamantoha/cache/issues/2))
+* [x] Memcached
 
 ```crystal
 require "cache"
@@ -133,6 +133,29 @@ If you need to connect to a remote server or a different port, try:
 redis = Redis.new(host: "10.0.1.1", port: 6380, password: "my-secret-pw", database: "my-database")
 cache = Cache::RedisStore(String, String).new(expires_in: 1.minute, cache: redis)
 ```
+
+### Memcached
+
+A cache store implementation which stores data in Memcached.
+
+```crystal
+cache = Cache::MemcachedStore(String, String).new(expires_in: 1.minute)
+cache.fetch("today") do
+  Time.now.day_of_week
+end
+```
+
+This assumes Memcached was started with a default configuration, and is listening on `localhost:11211`.
+
+You can connect to `Memcached` by instantiating the `Memcached::Client` class.
+
+If you need to connect to a remote server or a different port, try:
+
+```crystal
+memcached = Memcached::Client.new(host: "10.0.1.1", port: 11299)
+cache = Cache::MemcachedStore(String, String).new(expires_in: 1.minute, cache: memcached)
+```
+
 ### Null store
 
 A cache store implementation which doesn't actually store anything. Useful in
