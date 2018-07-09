@@ -12,6 +12,10 @@ dependencies:
     github: comandeo/crystal-memcached
     version: ~> 0.2.2
 
+development_dependencies:
+  ameba:
+    github: veelenga/ameba
+
 crystal: 0.25.1
 
 license: MIT
