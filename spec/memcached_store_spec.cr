@@ -119,7 +119,8 @@ describe Cache do
       value = store.fetch("foo") { "bar" }
       value.should eq("bar")
 
-      store.delete("foo")
+      result = store.delete("foo")
+      result.should eq(true)
 
       value = store.read("foo")
       value.should eq(nil)

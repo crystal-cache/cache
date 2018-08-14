@@ -44,9 +44,10 @@ module Cache
       value
     end
 
-    def delete(key : K)
+    def delete(key : K) : Bool
       @keys.delete(key)
-      @cache.delete(key)
+
+      @cache.delete(key).nil? ? false : true
     end
   end
 end
