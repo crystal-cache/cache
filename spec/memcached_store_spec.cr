@@ -19,7 +19,7 @@ describe Cache do
     it "has keys" do
       store = Cache::MemcachedStore(String, String).new(12.hours)
 
-      value = store.fetch("foo") { "bar" }
+      store.fetch("foo") { "bar" }
       store.keys.should eq(Set{"foo"})
     end
 
