@@ -8,6 +8,10 @@ module Cache
   # under the `/src/cache/stores` directory, e.g.
   # All implementations should support method `fetch`.
   abstract struct Store(K, V)
+    @keys : Set(String) = Set(String).new
+
+    property keys
+
     # Fetches data from the cache, using the given `key`. If there is data in the cache
     # with the given `key`, then that data is returned.
     #

@@ -16,6 +16,7 @@ module Cache
     end
 
     def write(key : K, value : V, *, expires_in = @expires_in)
+      @keys << key
       @expires_in = expires_in
       now = Time.utc_now
 

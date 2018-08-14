@@ -13,6 +13,13 @@ describe Cache do
       value.should eq("bar")
     end
 
+    it "has keys" do
+      store = Cache::MemoryStore(String, String).new(12.hours)
+
+      value = store.fetch("foo") { "bar" }
+      store.keys.should eq(Set{"foo"})
+    end
+
     it "fetch from cache" do
       store = Cache::MemoryStore(String, String).new(12.hours)
 

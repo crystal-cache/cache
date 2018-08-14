@@ -19,5 +19,12 @@ describe Cache do
       value = store.fetch("foo", expires_in: 3.hours) { "bar" }
       value.should eq("bar")
     end
+
+    it "has keys" do
+      store = Cache::NullStore(String, String).new(12.hours)
+
+      value = store.fetch("foo") { "bar" }
+      store.keys.should eq(Set{"foo"})
+    end
   end
 end

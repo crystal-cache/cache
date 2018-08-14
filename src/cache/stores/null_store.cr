@@ -10,6 +10,7 @@ module Cache
     end
 
     def write(key : K, value : V, *, expires_in = @expires_in)
+      @keys << key
     end
 
     def read(key : K)
