@@ -36,5 +36,10 @@ module Cache
       write(key, value, expires_in: expires_in)
       value
     end
+
+    def delete(key : K)
+      @keys.delete(key)
+      @cache.delete(key)
+    end
   end
 end

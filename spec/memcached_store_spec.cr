@@ -112,5 +112,18 @@ describe Cache do
       value = store.read("foo")
       value.should eq(nil)
     end
+
+    it "delete from cache" do
+      store = Cache::MemcachedStore(String, String).new(12.hours)
+
+      value = store.fetch("foo") { "bar" }
+      value.should eq("bar")
+
+      store.delete("foo")
+
+      value = store.read("foo")
+      value.should eq(nil)
+      store.keys.should eq(Set(String).new)
+    end
   end
 end
