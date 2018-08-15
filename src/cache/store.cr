@@ -1,3 +1,5 @@
+require "yaml"
+
 module Cache
   # An abstract cache store class.
   #
@@ -50,10 +52,20 @@ module Cache
     abstract def delete(key : K) : Bool
 
     struct Entry(V)
-      getter value
-      getter expires_in
+      include YAML::Serializable
 
-      def initialize(@value : V, @expires_in : Time)
+      @expires_at : Time
+
+      getter value
+      getter expires_at
+
+      def initialize(@value : V, expires_in : Time::Span)
+        @expires_at = Time.utc_now + expires_in
+      end
+
+      # Checks if the entry is expired.
+      def expired?
+        @expires_at && @expires_at <= Time.utc_now
       end
     end
   end
