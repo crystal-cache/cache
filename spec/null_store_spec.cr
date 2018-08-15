@@ -3,7 +3,9 @@ require "./spec_helper"
 describe Cache do
   context Cache::NullStore do
     it "initialize" do
-      (Cache::NullStore(String, String).new(expires_in: 12.hours)).should be_a(Cache::Store(String, String))
+      store = Cache::NullStore(String, String).new(expires_in: 12.hours)
+
+      store.should be_a(Cache::Store(String, String))
     end
 
     it "fetch" do

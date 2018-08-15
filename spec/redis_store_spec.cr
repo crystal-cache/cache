@@ -9,12 +9,15 @@ describe Cache do
 
     it "initialize" do
       store = Cache::RedisStore(String, String).new(expires_in: 12.hours)
+
       store.should be_a(Cache::Store(String, String))
     end
 
     it "initialize with redis" do
       redis = Redis.new(host: "localhost", port: 6379)
-      (Cache::RedisStore(String, String).new(expires_in: 12.hours, cache: redis)).should be_a(Cache::Store(String, String))
+      store = Cache::RedisStore(String, String).new(expires_in: 12.hours, cache: redis)
+
+      store.should be_a(Cache::Store(String, String))
     end
 
     it "has keys" do

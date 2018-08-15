@@ -8,12 +8,16 @@ describe Cache do
     end
 
     it "initialize" do
-      (Cache::MemcachedStore(String, String).new(expires_in: 12.hours)).should be_a(Cache::Store(String, String))
+      store = Cache::MemcachedStore(String, String).new(expires_in: 12.hours)
+
+      store.should be_a(Cache::Store(String, String))
     end
 
     it "initialize with memcached" do
       memcached = Memcached::Client.new(host: "localhost", port: 11211)
-      (Cache::MemcachedStore(String, String).new(expires_in: 12.hours, cache: memcached)).should be_a(Cache::Store(String, String))
+      store = Cache::MemcachedStore(String, String).new(expires_in: 12.hours, cache: memcached)
+
+      store.should be_a(Cache::Store(String, String))
     end
 
     it "has keys" do
