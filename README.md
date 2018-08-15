@@ -74,6 +74,7 @@ user.id # => 6539796
 
 * [x] Null store
 * [x] Memory
+* [x] Filesystem
 * [x] Redis
 * [x] Memcached
 
@@ -107,6 +108,20 @@ Can store any serializable Crystal object.
 
 ```crystal
 cache = Cache::MemoryStore(String, String).new(expires_in: 1.minute)
+cache.fetch("today") do
+  Time.now.day_of_week
+end
+```
+
+### Filesystem
+
+A cache store implementation which stores everything on the filesystem.
+
+```crystal
+cache_path = "#{__DIR__}/cache"
+
+cache = Cache::FileStore(String, String).new(expires_in: 12.hours, cache_path: cache_path)
+
 cache.fetch("today") do
   Time.now.day_of_week
 end
