@@ -15,6 +15,7 @@ dependencies:
 development_dependencies:
   ameba:
     github: veelenga/ameba
+    version: ~> 0.8.0
 
 crystal: 0.26.0
 
