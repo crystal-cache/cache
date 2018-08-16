@@ -2,6 +2,8 @@
 
 ## [...]
 
+## 0.1.0
+
 * Crystal 0.26 support
 * Add `FileStore` which stores everything on the filesystem
 * Add method to delete an entry in the cache
