@@ -1,6 +1,5 @@
 require "./cache/*"
 
-# TODO: Write documentation for `Cache`
+# :nodoc:
 module Cache
-  # TODO: Put your code here
 end

@@ -6,10 +6,10 @@ module Cache
   # need to go through the caching interface.
   struct NullStore(K, V) < Store(K, V)
     def initialize(@expires_in : Time::Span)
-      @cache = {} of K => Entry(V)
     end
 
     def write(key : K, value : V, *, expires_in = @expires_in)
+      @keys << key
     end
 
     def read(key : K)
@@ -23,6 +23,12 @@ module Cache
 
       write(key, value, expires_in: expires_in)
       value
+    end
+
+    def delete(key : K) : Bool
+      @keys.delete(key)
+
+      true
     end
   end
 end

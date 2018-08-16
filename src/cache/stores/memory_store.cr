@@ -16,17 +16,15 @@ module Cache
     end
 
     def write(key : K, value : V, *, expires_in = @expires_in)
-      @expires_in = expires_in
-      now = Time.utc_now
+      @keys << key
 
-      @cache[key] = Entry.new(value, now + expires_in)
+      @cache[key] = Entry.new(value, expires_in)
     end
 
     def read(key : K)
-      now = Time.utc_now
       entry = @cache[key]?
 
-      if entry && now < entry.expires_in
+      if entry && !entry.expired?
         entry.value
       else
         nil
@@ -41,6 +39,12 @@ module Cache
 
       write(key, value, expires_in: expires_in)
       value
+    end
+
+    def delete(key : K) : Bool
+      @keys.delete(key)
+
+      @cache.delete(key).nil? ? false : true
     end
   end
 end

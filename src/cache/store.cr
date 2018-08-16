@@ -1,3 +1,5 @@
+require "yaml"
+
 module Cache
   # An abstract cache store class.
   #
@@ -6,8 +8,12 @@ module Cache
   #
   # See the classes
   # under the `/src/cache/stores` directory, e.g.
-  # All implementations should support method `fetch`.
+  # All implementations should support method , `write`, `read`, `fetch`, and `delete`.
   abstract struct Store(K, V)
+    @keys : Set(String) = Set(String).new
+
+    property keys
+
     # Fetches data from the cache, using the given `key`. If there is data in the cache
     # with the given `key`, then that data is returned.
     #
@@ -27,11 +33,39 @@ module Cache
     # ```
     abstract def fetch(key : K, *, expires_in = @expires_in, &block)
 
-    struct Entry(V)
-      getter value
-      getter expires_in
+    # Writes the `value` to the cache, with the `key`.
+    #
+    # Optional `expires_in` will set an expiration time on the `key`.
+    #
+    # Options are passed to the underlying cache implementation.
+    abstract def write(key : K, value : V, *, expires_in = @expires_in)
 
-      def initialize(@value : V, @expires_in : Time)
+    # Reads data from the cache, using the given `key`.
+    #
+    # If there is data in the cache with the given `key`, then that data is returned.
+    # Otherwise, `nil` is returned.
+    abstract def read(key : K)
+
+    # Deletes an entry in the cache. Returns `true` if an entry is deleted.
+    #
+    # Options are passed to the underlying cache implementation.
+    abstract def delete(key : K) : Bool
+
+    struct Entry(V)
+      include YAML::Serializable
+
+      @expires_at : Time
+
+      getter value
+      getter expires_at
+
+      def initialize(@value : V, expires_in : Time::Span)
+        @expires_at = Time.utc_now + expires_in
+      end
+
+      # Checks if the entry is expired.
+      def expired?
+        @expires_at && @expires_at <= Time.utc_now
       end
     end
   end

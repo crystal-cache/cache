@@ -3,7 +3,9 @@ require "./spec_helper"
 describe Cache do
   context Cache::NullStore do
     it "initialize" do
-      (Cache::NullStore(String, String).new(expires_in: 12.hours)).should be_a(Cache::Store(String, String))
+      store = Cache::NullStore(String, String).new(expires_in: 12.hours)
+
+      store.should be_a(Cache::Store(String, String))
     end
 
     it "fetch" do
@@ -18,6 +20,27 @@ describe Cache do
 
       value = store.fetch("foo", expires_in: 3.hours) { "bar" }
       value.should eq("bar")
+    end
+
+    it "has keys" do
+      store = Cache::NullStore(String, String).new(12.hours)
+
+      store.fetch("foo") { "bar" }
+      store.keys.should eq(Set{"foo"})
+    end
+
+    it "delete from cache" do
+      store = Cache::NullStore(String, String).new(12.hours)
+
+      value = store.fetch("foo") { "bar" }
+      value.should eq("bar")
+
+      result = store.delete("foo")
+      result.should eq(true)
+
+      value = store.read("foo")
+      value.should eq(nil)
+      store.keys.should eq(Set(String).new)
     end
   end
 end
