@@ -86,7 +86,12 @@ There are multiple cache store implementations,
 each having its own additional features. See the classes
 under the `/src/cache/stores` directory, e.g.
 
-All implementations should support method `fetch`.
+### Commands
+
+All implementations should support method , `write`, `read`, `fetch`, and `delete`.
+
+
+#### fetch
 
 Fetches data from the cache, using the given `key`. If there is data in the cache
 with the given `key`, then that data is returned.
@@ -98,6 +103,48 @@ Setting `:expires_in` will set an expiration time on the cache.
 All caches support auto-expiring content after a specified number of seconds.
 This value can be specified as an option to the constructor (in which case all entries will be affected),
 or it can be supplied to the `fetch` or `write` method to effect just one entry.
+
+#### write
+
+Writes the `value` to the cache, with the `key`.
+
+Optional `expires_in` will set an expiration time on the `key`.
+
+> Options are passed to the underlying cache implementation.
+
+```crystal
+store = Cache::MemoryStore(String, String).new(12.hours)
+
+store.write("foo", "bar")
+```
+
+#### read
+
+Reads data from the cache, using the given `key`.
+
+If there is data in the cache with the given `key`, then that data is returned.
+Otherwise, `nil` is returned.
+
+```crystal
+store = Cache::MemoryStore(String, String).new(12.hours)
+store.write("foo", "bar")
+
+store.read("foo") # => "bar"
+```
+
+#### delete
+
+Deletes an entry in the cache. Returns `true` if an entry is deleted.
+
+> Options are passed to the underlying cache implementation.
+
+```crystal
+store = Cache::MemoryStore(String, String).new(12.hours)
+
+store.write("foo", "bar")
+
+store.delete("foo") # => true
+```
 
 ### Memory
 
