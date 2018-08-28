@@ -51,6 +51,10 @@ module Cache
     # Options are passed to the underlying cache implementation.
     abstract def delete(key : K) : Bool
 
+    private def clear_keys
+      @keys.clear
+    end
+
     struct Entry(V)
       include YAML::Serializable
 

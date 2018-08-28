@@ -12,6 +12,8 @@ module Cache
   # end
   # ```
   struct FileStore(K, V) < Store(K, V)
+    EXCLUDED_DIRS = [".", ".."]
+
     property cache_path
 
     def initialize(@expires_in : Time::Span, @cache_path : String)
@@ -56,6 +58,17 @@ module Cache
       File.delete(File.join(@cache_path, key))
 
       true
+    end
+
+    def clear
+      clear_keys
+
+      root_dirs = Dir.entries(cache_path)
+      root_dirs = root_dirs.reject { |f| EXCLUDED_DIRS.includes?(f) }
+
+      files = root_dirs.map { |f| File.join(cache_path, f) }
+
+      FileUtils.rm_r(files)
     end
 
     # Make sure a file path's directories exist.
