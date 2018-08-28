@@ -2,6 +2,8 @@
 
 ## [...]
 
+* add `.clear` method which deletes all entries from the cache.
+
 ## 0.1.0
 
 * Crystal 0.26 support
