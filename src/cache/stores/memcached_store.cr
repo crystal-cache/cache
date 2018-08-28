@@ -41,5 +41,11 @@ module Cache
       @keys.delete(key)
       @cache.delete(key)
     end
+
+    def clear
+      clear_keys
+
+      @cache.flush
+    end
   end
 end
