@@ -11,6 +11,8 @@ module Cache
   # end
   # ```
   struct MemoryStore(K, V) < Store(K, V)
+    property cache
+
     def initialize(@expires_in : Time::Span)
       @cache = {} of K => Entry(V)
     end
@@ -45,6 +47,12 @@ module Cache
       @keys.delete(key)
 
       @cache.delete(key).nil? ? false : true
+    end
+
+    def clear
+      clear_keys
+
+      @cache.clear
     end
   end
 end
