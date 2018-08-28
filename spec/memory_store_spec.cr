@@ -119,7 +119,6 @@ describe Cache do
       value = store.read("foo")
       value.should eq(nil)
       store.keys.should be_empty
-      store.cache.should be_empty
     end
   end
 end

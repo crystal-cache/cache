@@ -11,8 +11,6 @@ module Cache
   # end
   # ```
   struct MemoryStore(K, V) < Store(K, V)
-    property cache
-
     def initialize(@expires_in : Time::Span)
       @cache = {} of K => Entry(V)
     end
