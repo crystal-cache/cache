@@ -30,5 +30,9 @@ module Cache
 
       true
     end
+
+    def clear
+      clear_keys
+    end
   end
 end

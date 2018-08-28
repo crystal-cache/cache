@@ -143,6 +143,5 @@ describe Cache do
       value.should eq(nil)
       store.keys.should be_empty
     end
-
   end
 end

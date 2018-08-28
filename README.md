@@ -88,8 +88,13 @@ under the `/src/cache/stores` directory, e.g.
 
 ### Commands
 
-All implementations should support method , `write`, `read`, `fetch`, and `delete`.
+All store's implementations should support:
 
+* `fetch`
+* `write`
+* `read`
+* `delete`
+* `clear`
 
 #### fetch
 
@@ -142,8 +147,26 @@ Deletes an entry in the cache. Returns `true` if an entry is deleted.
 store = Cache::MemoryStore(String, String).new(12.hours)
 
 store.write("foo", "bar")
+store.read("foo") # => "bar"
 
 store.delete("foo") # => true
+store.read("foo") # => nil
+```
+
+#### clear
+
+Deletes all items from the cache.
+
+> Options are passed to the underlying cache implementation.
+
+```crystal
+store = Cache::MemoryStore(String, String).new(12.hours)
+
+store.write("foo", "bar")
+store.read("foo") # => "bar"
+
+store.clear
+store.read("foo") # => nil
 ```
 
 ### Memory
