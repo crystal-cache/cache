@@ -1,4 +1,5 @@
 require "../store"
+require "../../../ext/crystal-redis/redis"
 require "redis"
 
 module Cache
@@ -50,6 +51,12 @@ module Cache
       @keys.delete(key)
 
       @cache.del(key) == 1_i64 ? true : false
+    end
+
+    def clear
+      clear_keys
+
+      @cache.flushdb
     end
   end
 end
