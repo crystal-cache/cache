@@ -4,7 +4,7 @@ describe Cache do
   context Cache::MemcachedStore do
     Spec.before_each do
       memcached = Memcached::Client.new
-      memcached.delete("foo")
+      memcached.flush
     end
 
     it "initialize" do

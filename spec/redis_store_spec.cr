@@ -4,7 +4,7 @@ describe Cache do
   context Cache::RedisStore do
     Spec.before_each do
       redis = Redis.new
-      redis.del("foo")
+      redis.flushdb
     end
 
     it "initialize" do
