@@ -1,5 +1,4 @@
 require "../store"
-require "../../../ext/crystal-redis/redis"
 require "redis"
 
 module Cache
