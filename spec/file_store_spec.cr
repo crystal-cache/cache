@@ -106,13 +106,28 @@ describe Cache do
 
       value = store.fetch("foo") { "bar" }
       value.should eq("bar")
+      File.exists?(File.join(cache_path, "foo")).should be_true
 
       result = store.delete("foo")
       result.should eq(true)
 
       value = store.read("foo")
       value.should eq(nil)
-      store.keys.should eq(Set(String).new)
+      File.exists?(File.join(cache_path, "foo")).should be_false
+      store.keys.should be_empty
+    end
+
+    it "deletes all items from the cache" do
+      store = Cache::FileStore(String, String).new(12.hours, cache_path: cache_path)
+
+      value = store.fetch("foo") { "bar" }
+      value.should eq("bar")
+      File.exists?(File.join(cache_path, "foo")).should be_true
+
+      store.clear
+
+      File.exists?(File.join(cache_path, "foo")).should be_false
+      store.keys.should be_empty
     end
   end
 end

@@ -42,5 +42,16 @@ describe Cache do
       value.should eq(nil)
       store.keys.should eq(Set(String).new)
     end
+
+    it "deletes all items from the cache" do
+      store = Cache::NullStore(String, String).new(12.hours)
+
+      value = store.fetch("foo") { "bar" }
+      value.should eq("bar")
+
+      store.clear
+
+      store.keys.should be_empty
+    end
   end
 end

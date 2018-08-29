@@ -46,5 +46,11 @@ module Cache
 
       @cache.delete(key).nil? ? false : true
     end
+
+    def clear
+      clear_keys
+
+      @cache.clear
+    end
   end
 end
