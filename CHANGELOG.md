@@ -2,6 +2,10 @@
 
 ## [...]
 
+## 0.2.1
+
+* Use crystal-redis 2.1.0
+
 ## 0.2.0
 
 * add `.clear` method which deletes all entries from the cache.
