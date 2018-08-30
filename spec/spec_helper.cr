@@ -1,6 +1,7 @@
 require "spec"
 require "../src/cache"
 
+# TODO wait until https://github.com/crystal-lang/crystal/pull/6614 will be released
 module Spec
   # :nodoc:
   struct BeEmptyExpectation
