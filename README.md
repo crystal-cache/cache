@@ -179,7 +179,7 @@ Can store any serializable Crystal object.
 ```crystal
 cache = Cache::MemoryStore(String, String).new(expires_in: 1.minute)
 cache.fetch("today") do
-  Time.now.day_of_week
+  Time.utc.day_of_week
 end
 ```
 
@@ -193,7 +193,7 @@ cache_path = "#{__DIR__}/cache"
 cache = Cache::FileStore(String, String).new(expires_in: 12.hours, cache_path: cache_path)
 
 cache.fetch("today") do
-  Time.now.day_of_week
+  Time.utc.day_of_week
 end
 ```
 
@@ -204,7 +204,7 @@ A cache store implementation which stores data in Redis.
 ```crystal
 cache = Cache::RedisStore(String, String).new(expires_in: 1.minute)
 cache.fetch("today") do
-  Time.now.day_of_week
+  Time.utc.day_of_week
 end
 ```
 
@@ -226,7 +226,7 @@ A cache store implementation which stores data in Memcached.
 ```crystal
 cache = Cache::MemcachedStore(String, String).new(expires_in: 1.minute)
 cache.fetch("today") do
-  Time.now.day_of_week
+  Time.utc.day_of_week
 end
 ```
 
@@ -250,7 +250,7 @@ need to go through the caching interface.
 ```crystal
 cache = Cache::NullStore(String, String).new(expires_in: 1.minute)
 cache.fetch("today") do
-  Time.now.day_of_week
+  Time.utc.day_of_week
 end
 ```
 

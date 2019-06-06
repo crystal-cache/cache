@@ -28,7 +28,7 @@ module Cache
     # cache = Cache::RedisStore(String, String).new(expires_in: 1.hours)
     # # Set a lower value for one entry
     # cache.fetch("today", expires_in: 10.minutes) do
-    #   Time.now.day_of_week
+    #   Time.utc.day_of_week
     # end
     # ```
     abstract def fetch(key : K, *, expires_in = @expires_in, &block)

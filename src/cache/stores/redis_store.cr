@@ -7,7 +7,7 @@ module Cache
   # ```crystal
   # cache = Cache::RedisStore(String, String).new(expires_in: 1.minute)
   # cache.fetch("today") do
-  #   Time.now.day_of_week
+  #   Time.utc.day_of_week
   # end
   # ```
   #
