@@ -1,5 +1,5 @@
 name: cache
-version: 0.2.1
+version: 0.3.1
 
 authors:
   - Anton Maminov <anton.maminov@gmail.com>
@@ -14,8 +14,8 @@ dependencies:
 
 development_dependencies:
   ameba:
-    github: veelenga/ameba
+    github: crystal-ameba/ameba
 
-crystal: 0.29.0
+crystal: 0.30.0
 
 license: MIT
