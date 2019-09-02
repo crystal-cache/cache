@@ -237,7 +237,7 @@ You can connect to `Memcached` by instantiating the `Memcached::Client` class.
 If you need to connect to a remote server or a different port, try:
 
 ```crystal
-memcached = Memcached::Client.new(host: "10.0.1.1", port: 11299)
+memcached = Memcached::Client.new(host: "10.0.1.1", port: 11211)
 cache = Cache::MemcachedStore(String, String).new(expires_in: 1.minute, cache: memcached)
 ```
 
