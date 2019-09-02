@@ -7,10 +7,8 @@ authors:
 dependencies:
   redis:
     github: stefanwille/crystal-redis
-    version: ~> 2.1.0
   memcached:
     github: comandeo/crystal-memcached
-    version: ~> 0.2.2
 
 development_dependencies:
   ameba:
