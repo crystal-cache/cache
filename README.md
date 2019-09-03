@@ -210,7 +210,7 @@ end
 
 This assumes Redis was started with a default configuration, and is listening on localhost, port 6379.
 
-You can connect to `Redis` by instantiating the Redis class.
+You can connect to Redis by instantiating the `Redis` or `Redis::PooledClient` class.
 
 If you need to connect to a remote server or a different port, try:
 
@@ -264,4 +264,4 @@ end
 
 ## Contributors
 
-- [mamantoha](https://github.com/mamantoha) Anton Maminov - creator, maintainer
+* [mamantoha](https://github.com/mamantoha) Anton Maminov - creator, maintainer

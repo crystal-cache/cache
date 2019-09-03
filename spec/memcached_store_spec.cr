@@ -20,13 +20,6 @@ describe Cache do
       store.should be_a(Cache::Store(String, String))
     end
 
-    it "has keys" do
-      store = Cache::MemcachedStore(String, String).new(12.hours)
-
-      store.fetch("foo") { "bar" }
-      store.keys.should eq(Set{"foo"})
-    end
-
     it "write to cache first time" do
       store = Cache::MemcachedStore(String, String).new(12.hours)
 

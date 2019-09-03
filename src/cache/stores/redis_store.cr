@@ -13,7 +13,7 @@ module Cache
   #
   # This assumes Redis was started with a default configuration, and is listening on localhost, port 6379.
   #
-  # You can connect to `Redis` by instantiating the `Redis` class.
+  # You can connect to Redis by instantiating the `Redis` or `Redis::PooledClient` class.
   #
   # If you need to connect to a remote server or a different port, try:
   #
@@ -28,7 +28,6 @@ module Cache
     end
 
     def write(key : K, value : V, *, expires_in = @expires_in)
-      @keys << key
       @cache.set(key, value, expires_in.total_seconds.to_i)
     end
 
@@ -47,14 +46,10 @@ module Cache
     end
 
     def delete(key : K) : Bool
-      @keys.delete(key)
-
       @cache.del(key) == 1_i64 ? true : false
     end
 
     def clear
-      clear_keys
-
       @cache.flushdb
     end
   end

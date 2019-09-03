@@ -19,7 +19,6 @@ module Cache
     end
 
     def write(key : K, value : V, *, expires_in = @expires_in)
-      @keys << key
       @cache.set(key, value, expires_in.total_seconds.to_i)
     end
 
@@ -38,13 +37,10 @@ module Cache
     end
 
     def delete(key : K) : Bool
-      @keys.delete(key)
       @cache.delete(key)
     end
 
     def clear
-      clear_keys
-
       @cache.flush
     end
   end
