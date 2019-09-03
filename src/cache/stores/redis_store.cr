@@ -22,7 +22,7 @@ module Cache
   # cache = Cache::RedisStore(String, String).new(expires_in: 1.minute, cache: redis)
   # ```
   struct RedisStore(K, V) < Store(K, V)
-    @cache : Redis
+    @cache : Redis | Redis::PooledClient
 
     def initialize(@expires_in : Time::Span, @cache = Redis.new)
     end
