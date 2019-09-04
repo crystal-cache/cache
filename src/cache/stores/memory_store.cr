@@ -4,6 +4,8 @@ module Cache
   # A cache store implementation which stores everything into memory in the
   # same process.
   #
+  # It uses the Zlib in/de-flate data to reduce memory usage.
+  #
   # ```crystal
   # cache = Cache::MemoryStore(String, String).new(expires_in: 1.minute)
   # cache.fetch("today") do
