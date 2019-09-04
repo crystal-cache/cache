@@ -9,4 +9,10 @@ describe Cache::DataCompressor do
 
     string.should eq(decompressed_string)
   end
+
+  it "should deflate data with base64" do
+    string = "hello"
+
+    Cache::DataCompressor.deflate(string).should eq("eJzLSM3JyQcABiwCFQ==\n")
+  end
 end
