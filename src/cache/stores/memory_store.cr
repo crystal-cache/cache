@@ -11,12 +11,16 @@ module Cache
   # end
   # ```
   struct MemoryStore(K, V) < Store(K, V)
-    def initialize(@expires_in : Time::Span)
+    def initialize(@expires_in : Time::Span, @compress : Bool = true)
       @cache = {} of K => Entry(V)
     end
 
     def write(key : K, value : V, *, expires_in = @expires_in)
       @keys << key
+
+      if @compress
+        value = Cache::DataCompressor.deflate(value)
+      end
 
       @cache[key] = Entry.new(value, expires_in)
     end
@@ -25,7 +29,11 @@ module Cache
       entry = @cache[key]?
 
       if entry && !entry.expired?
-        entry.value
+        if @compress
+          Cache::DataCompressor.inflate(entry.value)
+        else
+          entry.value
+        end
       else
         nil
       end
