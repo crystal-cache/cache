@@ -4,6 +4,8 @@ module Cache
   # A cache store implementation which stores everything into memory in the
   # same process.
   #
+  # It uses the Zlib in/de-flate data to reduce memory usage.
+  #
   # ```crystal
   # cache = Cache::MemoryStore(String, String).new(expires_in: 1.minute)
   # cache.fetch("today") do
@@ -11,12 +13,16 @@ module Cache
   # end
   # ```
   struct MemoryStore(K, V) < Store(K, V)
-    def initialize(@expires_in : Time::Span)
+    def initialize(@expires_in : Time::Span, @compress : Bool = true)
       @cache = {} of K => Entry(V)
     end
 
     def write(key : K, value : V, *, expires_in = @expires_in)
       @keys << key
+
+      if @compress
+        value = Cache::DataCompressor.deflate(value)
+      end
 
       @cache[key] = Entry.new(value, expires_in)
     end
@@ -25,7 +31,11 @@ module Cache
       entry = @cache[key]?
 
       if entry && !entry.expired?
-        entry.value
+        if @compress
+          Cache::DataCompressor.inflate(entry.value)
+        else
+          entry.value
+        end
       else
         nil
       end

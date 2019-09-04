@@ -3,6 +3,7 @@
 ## [...]
 
 * Allow `Redis::PooledClient` in `RedisStore`
+* Compress data with Zlib in `MemoryStore`
 
 ## 0.4.0
 
