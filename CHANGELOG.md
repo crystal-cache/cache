@@ -2,6 +2,17 @@
 
 ## [...]
 
+* Allow `Redis::PooledClient` in `RedisStore`
+
+## 0.4.0
+
+* Crystal 0.30 support
+* Use latest Redis and Memcached shards
+
+## 0.3.0
+
+* Crystal 0.27 support
+
 ## 0.2.1
 
 * Use crystal-redis 2.1.0
