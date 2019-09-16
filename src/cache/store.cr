@@ -69,12 +69,12 @@ module Cache
       getter expires_at
 
       def initialize(@value : V, expires_in : Time::Span)
-        @expires_at = Time.utc_now + expires_in
+        @expires_at = Time.utc + expires_in
       end
 
       # Checks if the entry is expired.
       def expired?
-        @expires_at && @expires_at <= Time.utc_now
+        @expires_at && @expires_at <= Time.utc
       end
     end
   end
