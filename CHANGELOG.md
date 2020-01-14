@@ -2,6 +2,10 @@
 
 ## [...]
 
+## 0.6.0
+
+* Crystal 0.32.0 support
+
 ## 0.5.0
 
 * Allow `Redis::PooledClient` in `RedisStore`
