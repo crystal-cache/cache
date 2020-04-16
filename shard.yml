@@ -1,5 +1,5 @@
 name: cache
-version: 0.6.0
+version: 0.7.0
 
 authors:
   - Anton Maminov <anton.maminov@gmail.com>
@@ -7,13 +7,15 @@ authors:
 dependencies:
   redis:
     github: stefanwille/crystal-redis
+    version: ~> 2.6.0
   memcached:
     github: comandeo/crystal-memcached
+    version: ~> 0.2.2
 
 development_dependencies:
   ameba:
     github: crystal-ameba/ameba
 
-crystal: 0.30.1
+crystal: 0.34.0
 
 license: MIT

@@ -2,6 +2,10 @@
 
 ## [...]
 
+## 0.7.0
+
+* Crystal 0.34.0 support
+
 ## 0.6.0
 
 * Crystal 0.32.0 support
