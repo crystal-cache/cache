@@ -10,7 +10,7 @@ dependencies:
     version: ~> 2.6.0
   memcached:
     github: comandeo/crystal-memcached
-    branch: master
+    branch: develop
 
 development_dependencies:
   ameba:
