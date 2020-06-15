@@ -39,10 +39,10 @@ github_client = HTTP::Client.new(URI.parse("https://api.github.com"))
 
 # Define how an object is mapped to JSON.
 class User
-  JSON.mapping({
-    login: String,
-    id:    Int32,
-  })
+  include JSON::Serializable
+
+  property login : String
+  property id : Int32
 end
 
 username = "crystal-lang"
