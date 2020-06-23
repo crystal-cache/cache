@@ -2,6 +2,11 @@
 
 ## [...]
 
+## 0.9.0
+
+* Ignore `compress` options for other then `MemoryStore(String, String)`
+* Fix `MemoryStore(K, V)` can store any serializable Crystal object.
+
 ## 0.8.0
 
 * Crystal 0.35.0 support

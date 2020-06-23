@@ -176,10 +176,20 @@ same process.
 
 Can store any serializable Crystal object.
 
-Cached data are compressed by default. To turn off compression, pass `compress: false` to the initializer.
+```crystal
+cache = Cache::MemoryStore(String, Hash(String| Int32)).new(expires_in: 1.minute)
+cache.fetch("data_key") do
+  {"name" => "John", "age" => 18}
+end
+```
+
+Cached data for `MemoryStore(String, String)` are compressed by default.
+To turn off compression, pass `compress: false` to the initializer.
+
+For another type of keys `compress` option ignored.
 
 ```crystal
-cache = Cache::MemoryStore(String, String).new(expires_in: 1.minute)
+cache = Cache::MemoryStore(String, String).new(expires_in: 1.minute, compress: false)
 cache.fetch("today") do
   Time.utc.day_of_week
 end
