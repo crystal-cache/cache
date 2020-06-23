@@ -20,25 +20,26 @@ module Cache
     def write(key : K, value : V, *, expires_in = @expires_in)
       @keys << key
 
-      if @compress
-        value = Cache::DataCompressor.deflate(value)
-      end
+      {% if V.is_a?(String) %}
+        value = Cache::DataCompressor.deflate(value) if @compress
+      {% end %}
 
       @cache[key] = Entry.new(value, expires_in)
     end
 
     def read(key : K)
       entry = @cache[key]?
+      value = nil
 
       if entry && !entry.expired?
-        if @compress
-          Cache::DataCompressor.inflate(entry.value)
-        else
-          entry.value
-        end
-      else
-        nil
+        value = entry.value
+
+        {% if V.is_a?(String) %}
+          value = Cache::DataCompressor.inflate(value) if @compress
+        {% end %}
       end
+
+      value
     end
 
     def fetch(key : K, *, expires_in = @expires_in, &block)

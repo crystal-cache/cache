@@ -11,21 +11,21 @@ describe Cache do
     [true, false].each do |compress|
       context "with compress #{compress}" do
         it "write to cache first time" do
-          store = Cache::MemoryStore(String, String).new(12.hours)
+          store = Cache::MemoryStore(String, String).new(expires_in: 12.hours, compress: compress)
 
           value = store.fetch("foo") { "bar" }
           value.should eq("bar")
         end
 
         it "has keys" do
-          store = Cache::MemoryStore(String, String).new(12.hours)
+          store = Cache::MemoryStore(String, String).new(expires_in: 12.hours, compress: compress)
 
           store.fetch("foo") { "bar" }
           store.keys.should eq(Set{"foo"})
         end
 
         it "fetch from cache" do
-          store = Cache::MemoryStore(String, String).new(12.hours)
+          store = Cache::MemoryStore(String, String).new(expires_in: 12.hours, compress: compress)
 
           value = store.fetch("foo") { "bar" }
           value.should eq("bar")
@@ -35,7 +35,7 @@ describe Cache do
         end
 
         it "don't fetch from cache if expires" do
-          store = Cache::MemoryStore(String, String).new(1.seconds)
+          store = Cache::MemoryStore(String, String).new(expires_in: 1.seconds, compress: compress)
 
           value = store.fetch("foo") { "bar" }
           value.should eq("bar")
@@ -47,7 +47,7 @@ describe Cache do
         end
 
         it "fetch with expires_in from cache" do
-          store = Cache::MemoryStore(String, String).new(1.seconds)
+          store = Cache::MemoryStore(String, String).new(expires_in: 1.seconds, compress: compress)
 
           value = store.fetch("foo", expires_in: 1.hours) { "bar" }
           value.should eq("bar")
@@ -59,7 +59,7 @@ describe Cache do
         end
 
         it "don't fetch with expires_in from cache if expires" do
-          store = Cache::MemoryStore(String, String).new(12.hours)
+          store = Cache::MemoryStore(String, String).new(expires_in: 12.hours, compress: compress)
 
           value = store.fetch("foo", expires_in: 1.seconds) { "bar" }
           value.should eq("bar")
@@ -71,7 +71,7 @@ describe Cache do
         end
 
         it "write" do
-          store = Cache::MemoryStore(String, String).new(12.hours)
+          store = Cache::MemoryStore(String, String).new(expires_in: 12.hours, compress: compress)
           store.write("foo", "bar", expires_in: 1.minute)
 
           value = store.fetch("foo") { "bar" }
@@ -79,7 +79,7 @@ describe Cache do
         end
 
         it "read" do
-          store = Cache::MemoryStore(String, String).new(12.hours)
+          store = Cache::MemoryStore(String, String).new(expires_in: 12.hours, compress: compress)
           store.write("foo", "bar")
 
           value = store.read("foo")
@@ -87,7 +87,7 @@ describe Cache do
         end
 
         it "set a custom expires_in value for one entry on write" do
-          store = Cache::MemoryStore(String, String).new(12.hours)
+          store = Cache::MemoryStore(String, String).new(expires_in: 12.hours, compress: compress)
           store.write("foo", "bar", expires_in: 1.second)
 
           sleep 2
@@ -97,7 +97,7 @@ describe Cache do
         end
 
         it "delete from cache" do
-          store = Cache::MemoryStore(String, String).new(12.hours)
+          store = Cache::MemoryStore(String, String).new(expires_in: 12.hours, compress: compress)
 
           value = store.fetch("foo") { "bar" }
           value.should eq("bar")
@@ -111,7 +111,7 @@ describe Cache do
         end
 
         it "deletes all items from the cache" do
-          store = Cache::MemoryStore(String, String).new(12.hours)
+          store = Cache::MemoryStore(String, String).new(expires_in: 12.hours, compress: compress)
 
           value = store.fetch("foo") { "bar" }
           value.should eq("bar")
@@ -121,6 +121,48 @@ describe Cache do
           value = store.read("foo")
           value.should eq(nil)
           store.keys.should be_empty
+        end
+      end
+    end
+
+    context "with Hash as value" do
+      [true, false].each do |compress|
+        context "with compress #{compress}" do
+          it "fetch from cache" do
+            store = Cache::MemoryStore(String, Hash(String, String | Int32))
+              .new(expires_in: 30.seconds, compress: compress)
+
+            data = {
+              "a" => 1,
+              "b" => "foo",
+            }
+
+            new_data = {
+              "a" => 2,
+              "b" => "bar",
+            }
+
+            value = store.fetch("data_key") { data }
+            value.should eq(data)
+
+            value = store.fetch("data_key") { new_data }
+            value.should eq(data)
+          end
+
+          it "write and read" do
+            store = Cache::MemoryStore(String, Hash(String, String | Int32))
+              .new(expires_in: 30.seconds, compress: compress)
+
+            data = {
+              "a" => 1,
+              "b" => "bla",
+            }
+
+            store.write("data_key", data)
+
+            result = store.read("data_key")
+            result.should eq(data)
+          end
         end
       end
     end
