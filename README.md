@@ -177,7 +177,7 @@ same process.
 Can store any serializable Crystal object.
 
 ```crystal
-cache = Cache::MemoryStore(String, Hash(String| Int32)).new(expires_in: 1.minute)
+cache = Cache::MemoryStore(String, Hash(String | Int32)).new(expires_in: 1.minute)
 cache.fetch("data_key") do
   {"name" => "John", "age" => 18}
 end
