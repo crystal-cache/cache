@@ -6,8 +6,8 @@ authors:
 
 dependencies:
   redis:
-    github: stefanwille/crystal-redis
-    version: ~> 2.6.0
+    github: jgaskins/redis
+    branch: master
   memcached:
     github: comandeo/crystal-memcached
     branch: develop

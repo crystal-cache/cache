@@ -1,5 +1,6 @@
 require "../store"
 require "redis"
+require "../../ext/redis/commands"
 
 module Cache
   # A cache store implementation which stores data in Redis.
@@ -13,18 +14,18 @@ module Cache
   #
   # This assumes Redis was started with a default configuration, and is listening on localhost, port 6379.
   #
-  # You can connect to Redis by instantiating the `Redis` or `Redis::PooledClient` class.
+  # You can connect to Redis by instantiating the `Redis::Client` class.
   #
   # If you need to connect to a remote server or a different port, try:
   #
   # ```crystal
-  # redis = Redis.new(host: "10.0.1.1", port: 6380, password: "my-secret-pw", database: "my-database")
+  # redis = Redis::Client.new(URI.parse("rediss://:my-secret-pw@10.0.1.1:6380/my-database"))
   # cache = Cache::RedisStore(String, String).new(expires_in: 1.minute, cache: redis)
   # ```
   struct RedisStore(K, V) < Store(K, V)
-    @cache : Redis | Redis::PooledClient
+    @cache : Redis::Client
 
-    def initialize(@expires_in : Time::Span, @cache = Redis.new)
+    def initialize(@expires_in : Time::Span, @cache = Redis::Client.new)
     end
 
     def write(key : K, value : V, *, expires_in = @expires_in)

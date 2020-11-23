@@ -3,7 +3,7 @@ require "./spec_helper"
 describe Cache do
   context Cache::RedisStore do
     Spec.before_each do
-      redis = Redis.new
+      redis = Redis::Client.new(URI.parse("redis://localhost:6379"))
       redis.flushdb
     end
 
@@ -14,14 +14,7 @@ describe Cache do
     end
 
     it "initialize with Redis" do
-      redis = Redis.new(host: "localhost", port: 6379)
-      store = Cache::RedisStore(String, String).new(expires_in: 12.hours, cache: redis)
-
-      store.should be_a(Cache::Store(String, String))
-    end
-
-    it "initialize with Redis::PooledClient" do
-      redis = Redis::PooledClient.new(host: "localhost", port: 6379, pool_size: 20)
+      redis = Redis::Client.new(URI.parse("redis://localhost:6379"))
       store = Cache::RedisStore(String, String).new(expires_in: 12.hours, cache: redis)
 
       store.should be_a(Cache::Store(String, String))
@@ -45,7 +38,7 @@ describe Cache do
     end
 
     it "fetch from cache with custom Redis" do
-      redis = Redis.new(host: "localhost", port: 6379)
+      redis = Redis::Client.new(URI.parse("redis://localhost:6379"))
       store = Cache::RedisStore(String, String).new(expires_in: 12.hours, cache: redis)
 
       value = store.fetch("foo") { "bar" }
