@@ -2,6 +2,9 @@
 
 ## [...]
 
+* Allow to set `false` as a value
+* fix `MemoryStore` and `FileStore` with generic types values
+
 ## 0.9.0
 
 * Ignore `compress` options for other then `MemoryStore(String, String)`
