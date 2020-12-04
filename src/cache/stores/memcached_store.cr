@@ -40,7 +40,7 @@ module Cache
       @cache.delete(key)
     end
 
-    def has_key?(key : K) : Bool
+    def exists?(key : K) : Bool
       !!@cache.get(key)
     end
 

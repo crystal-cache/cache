@@ -51,7 +51,10 @@ module Cache
     # Options are passed to the underlying cache implementation.
     abstract def delete(key : K) : Bool
 
-    abstract def has_key?(key : K) : Bool
+    # Returns true if the cache contains an entry for the given key.
+    #
+    # Options are passed to the underlying cache implementation.
+    abstract def exists?(key : K) : Bool
 
     # Deletes all entries from the cache.
     #

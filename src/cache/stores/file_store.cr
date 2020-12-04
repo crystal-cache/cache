@@ -60,12 +60,9 @@ module Cache
       true
     end
 
-    def has_key?(key : K) : Bool
-      if entry = @cache[key]?
-        !entry.expired?
-      else
-        false
-      end
+    def exists?(key : K) : Bool
+      entry = @cache[key]?
+      (entry && !entry.expired?) || false
     end
 
     def clear

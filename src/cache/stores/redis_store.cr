@@ -49,7 +49,7 @@ module Cache
       @cache.del(key) == 1_i64 ? true : false
     end
 
-    def has_key?(key : K) : Bool
+    def exists?(key : K) : Bool
       @cache.exists(key) == 1
     end
 

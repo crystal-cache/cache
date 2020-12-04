@@ -143,23 +143,23 @@ describe Cache do
           store.keys.should be_empty
         end
 
-        it "#has_key?" do
+        it "#exists?" do
           store = Cache::MemoryStore(String, String).new(expires_in: 12.hours, compress: compress)
 
           value = store.write("foo", "bar")
 
-          store.has_key?("foo").should eq(true)
-          store.has_key?("foz").should eq(false)
+          store.exists?("foo").should eq(true)
+          store.exists?("foz").should eq(false)
         end
 
-        it "#has_key? expires" do
+        it "#exists? expires" do
           store = Cache::MemoryStore(String, String).new(expires_in: 1.second, compress: compress)
 
           value = store.write("foo", "bar")
 
           sleep 2
 
-          store.has_key?("foo").should eq(false)
+          store.exists?("foo").should eq(false)
         end
       end
     end

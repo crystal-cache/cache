@@ -31,7 +31,7 @@ module Cache
       true
     end
 
-    def has_key?(key : K) : Bool
+    def exists?(key : K) : Bool
       @keys.includes?(key)
     end
 
