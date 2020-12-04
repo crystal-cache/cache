@@ -19,7 +19,7 @@ module Cache
     end
 
     def write(key : K, value : V, *, expires_in = @expires_in)
-      @cache.set(key, value, expires_in.total_seconds.to_i)
+      @cache.set(key, value.to_s, expires_in.total_seconds.to_i)
     end
 
     def read(key : K)
@@ -42,6 +42,14 @@ module Cache
 
     def exists?(key : K) : Bool
       !!@cache.get(key)
+    end
+
+    def increment(key : K, amount = 1)
+      @cache.increment(key, amount)
+    end
+
+    def decrement(key : K, amount = 1)
+      @cache.decrement(key, amount)
     end
 
     def clear

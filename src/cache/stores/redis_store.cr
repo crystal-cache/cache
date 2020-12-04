@@ -53,6 +53,14 @@ module Cache
       @cache.exists(key) == 1
     end
 
+    def increment(key : K, amount = 1)
+      @cache.incrby(key, amount)
+    end
+
+    def decrement(key : K, amount = 1)
+      @cache.decrby(key, amount)
+    end
+
     def clear
       @cache.flushdb
     end

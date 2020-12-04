@@ -162,5 +162,27 @@ describe Cache do
 
       store.exists?("foo").should eq(false)
     end
+
+    it "#increment" do
+      store = Cache::RedisStore(String, Int32).new(12.hours)
+
+      store.write("num", 1)
+      store.increment("num", 1)
+
+      value = store.read("num")
+
+      value.should eq("2")
+    end
+
+    it "#decrement" do
+      store = Cache::RedisStore(String, Int32).new(12.hours)
+
+      store.write("num", 2)
+      store.decrement("num", 1)
+
+      value = store.read("num")
+
+      value.should eq("1")
+    end
   end
 end

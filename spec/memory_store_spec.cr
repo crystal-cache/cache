@@ -161,6 +161,28 @@ describe Cache do
 
           store.exists?("foo").should eq(false)
         end
+
+        it "#increment" do
+          store = Cache::MemoryStore(String, Int32).new(expires_in: 12.hours, compress: compress)
+
+          store.write("num", 1)
+          store.increment("num", 1)
+
+          value = store.read("num")
+
+          value.should eq(2)
+        end
+
+        it "#decrement" do
+          store = Cache::MemoryStore(String, Int32).new(expires_in: 12.hours, compress: compress)
+
+          store.write("num", 2)
+          store.decrement("num", 1)
+
+          value = store.read("num")
+
+          value.should eq(1)
+        end
       end
     end
 

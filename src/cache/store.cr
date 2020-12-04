@@ -65,6 +65,26 @@ module Cache
       @keys.clear
     end
 
+    # Increment an integer value in the cache.
+    def increment(key : K, amount = 1)
+      if num = read(key)
+        return unless num.is_a?(Int)
+
+        num += amount
+        write(key, num)
+      end
+    end
+
+    # Decrement an integer value in the cache.
+    def decrement(key : K, amount = 1)
+      if num = read(key)
+        return unless num.is_a?(Int)
+
+        num -= amount
+        write(key, num)
+      end
+    end
+
     struct Entry(V)
       include YAML::Serializable
 
