@@ -140,7 +140,7 @@ describe Cache do
     it "#exists?" do
       store = Cache::MemcachedStore(String, String).new(12.hours)
 
-      value = store.write("foo", "bar")
+      store.write("foo", "bar")
 
       store.exists?("foo").should eq(true)
       store.exists?("foz").should eq(false)
@@ -149,7 +149,7 @@ describe Cache do
     it "#exists? expires" do
       store = Cache::MemcachedStore(String, String).new(1.second)
 
-      value = store.write("foo", "bar")
+      store.write("foo", "bar")
 
       sleep 2
 
