@@ -39,6 +39,26 @@ describe Cache do
       value.should eq("bar")
     end
 
+    it "fetch from cache with generic types values" do
+      store = Cache::FileStore(String, String | Int32).new(expires_in: 12.hours, cache_path: cache_path)
+
+      value = store.fetch("string") { "bar" }
+      value.should eq("bar")
+
+      value = store.fetch("integer") { 13 }
+      value.should eq(13)
+    end
+
+    it "fetch from cache with false values" do
+      store = Cache::FileStore(String, String | Bool).new(expires_in: 12.hours, cache_path: cache_path)
+
+      value = store.fetch("foo") { false }
+      value.should eq(false)
+
+      value = store.fetch("foo") { "bar" }
+      value.should eq(false)
+    end
+
     it "don't fetch from cache if expired" do
       store = Cache::FileStore(String, String).new(1.seconds, cache_path: cache_path)
 

@@ -44,6 +44,16 @@ describe Cache do
           value.should eq(13)
         end
 
+        it "fetch from cache with false values" do
+          store = Cache::MemoryStore(String, String | Bool).new(expires_in: 12.hours, compress: compress)
+
+          value = store.fetch("foo") { false }
+          value.should eq(false)
+
+          value = store.fetch("foo") { "bar" }
+          value.should eq(false)
+        end
+
         it "don't fetch from cache if expires" do
           store = Cache::MemoryStore(String, String).new(expires_in: 1.seconds, compress: compress)
 

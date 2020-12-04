@@ -44,7 +44,7 @@ module Cache
 
     def fetch(key : K, *, expires_in = @expires_in, &block)
       value = read(key)
-      return value if value
+      return value unless value.nil?
 
       value = yield
 
