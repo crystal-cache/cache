@@ -142,6 +142,25 @@ describe Cache do
           value.should eq(nil)
           store.keys.should be_empty
         end
+
+        it "#has_key?" do
+          store = Cache::MemoryStore(String, String).new(expires_in: 12.hours, compress: compress)
+
+          value = store.write("foo", "bar")
+
+          store.has_key?("foo").should eq(true)
+          store.has_key?("foz").should eq(false)
+        end
+
+        it "#has_key? expires" do
+          store = Cache::MemoryStore(String, String).new(expires_in: 1.second, compress: compress)
+
+          value = store.write("foo", "bar")
+
+          sleep 2
+
+          store.has_key?("foo").should eq(false)
+        end
       end
     end
 

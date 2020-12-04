@@ -40,6 +40,10 @@ module Cache
       @cache.delete(key)
     end
 
+    def has_key?(key : K) : Bool
+      !!@cache.get(key)
+    end
+
     def clear
       @cache.flush
     end

@@ -49,6 +49,10 @@ module Cache
       @cache.del(key) == 1_i64 ? true : false
     end
 
+    def has_key?(key : K) : Bool
+      @cache.exists(key) == 1
+    end
+
     def clear
       @cache.flushdb
     end

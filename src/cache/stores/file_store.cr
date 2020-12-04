@@ -60,6 +60,14 @@ module Cache
       true
     end
 
+    def has_key?(key : K) : Bool
+      if entry = @cache[key]?
+        !entry.expired?
+      else
+        false
+      end
+    end
+
     def clear
       clear_keys
 

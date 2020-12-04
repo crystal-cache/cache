@@ -149,5 +149,24 @@ describe Cache do
       File.exists?(File.join(cache_path, "foo")).should be_false
       store.keys.should be_empty
     end
+
+    it "#has_key?" do
+      store = Cache::FileStore(String, String).new(12.hours, cache_path: cache_path)
+
+      value = store.write("foo", "bar")
+
+      store.has_key?("foo").should eq(true)
+      store.has_key?("foz").should eq(false)
+    end
+
+    it "#has_key? expires" do
+      store = Cache::FileStore(String, String).new(12.hours, cache_path: cache_path)
+
+      value = store.write("foo", "bar")
+
+      sleep 2
+
+      store.has_key?("foo").should eq(false)
+    end
   end
 end

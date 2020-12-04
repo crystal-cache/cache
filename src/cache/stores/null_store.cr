@@ -31,6 +31,10 @@ module Cache
       true
     end
 
+    def has_key?(key : K) : Bool
+      @keys.includes?(key)
+    end
+
     def clear
       clear_keys
     end
