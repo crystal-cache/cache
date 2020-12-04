@@ -5,6 +5,7 @@
 * Allow to set `false` as a value
 * Fix `MemoryStore` and `FileStore` with generic types values
 * Add `Store#exists?` to check if the cache contains an entry for the given key.
+* Add `Store#increment` and `Store#decrement` for integer values in the cache.
 
 ## 0.9.0
 
