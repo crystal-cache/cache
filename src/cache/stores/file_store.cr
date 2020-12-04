@@ -30,11 +30,7 @@ module Cache
     end
 
     def read(key : K)
-      file = File.join(@cache_path, key)
-
-      return nil unless File.exists?(file)
-
-      entry = Entry(V).from_yaml(File.read(file))
+      entry = read_entry(key)
 
       if entry && !entry.expired?
         entry.value
@@ -61,7 +57,7 @@ module Cache
     end
 
     def exists?(key : K) : Bool
-      entry = @cache[key]?
+      entry = read_entry(key)
       (entry && !entry.expired?) || false
     end
 
@@ -74,6 +70,14 @@ module Cache
       files = root_dirs.map { |f| File.join(cache_path, f) }
 
       FileUtils.rm_r(files)
+    end
+
+    private def read_entry(key : K)
+      file = File.join(@cache_path, key)
+
+      return nil unless File.exists?(file)
+
+      Entry(V).from_yaml(File.read(file))
     end
 
     # Make sure a file path's directories exist.

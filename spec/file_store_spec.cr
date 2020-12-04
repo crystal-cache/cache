@@ -160,7 +160,7 @@ describe Cache do
     end
 
     it "#exists? expires" do
-      store = Cache::FileStore(String, String).new(12.hours, cache_path: cache_path)
+      store = Cache::FileStore(String, String).new(1.second, cache_path: cache_path)
 
       value = store.write("foo", "bar")
 
