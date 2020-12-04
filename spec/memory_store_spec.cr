@@ -34,6 +34,16 @@ describe Cache do
           value.should eq("bar")
         end
 
+        it "fetch from cache with generic types values" do
+          store = Cache::MemoryStore(String, String | Int32).new(expires_in: 12.hours, compress: compress)
+
+          value = store.fetch("string") { "bar" }
+          value.should eq("bar")
+
+          value = store.fetch("integer") { 13 }
+          value.should eq(13)
+        end
+
         it "don't fetch from cache if expires" do
           store = Cache::MemoryStore(String, String).new(expires_in: 1.seconds, compress: compress)
 

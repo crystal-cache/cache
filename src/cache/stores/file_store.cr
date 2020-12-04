@@ -23,7 +23,7 @@ module Cache
       @keys << key
 
       file = File.join(@cache_path, key)
-      entry = Entry.new(value, expires_in)
+      entry = Entry(V).new(value, expires_in)
 
       ensure_cache_path(File.dirname(file))
       File.write(file, entry.to_yaml)

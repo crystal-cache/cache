@@ -24,7 +24,7 @@ module Cache
         value = Cache::DataCompressor.deflate(value) if @compress
       {% end %}
 
-      @cache[key] = Entry.new(value, expires_in)
+      @cache[key] = Entry(V).new(value, expires_in)
     end
 
     def read(key : K)
