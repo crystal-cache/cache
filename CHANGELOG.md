@@ -2,6 +2,8 @@
 
 ## [...]
 
+## 0.10.0
+
 * Allow to set `false` as a value
 * Fix `MemoryStore` and `FileStore` with generic types values
 * Add `Store#exists?` to check if the cache contains an entry for the given key.
