@@ -18,22 +18,12 @@ module Cache
     def initialize(@expires_in : Time::Span, @cache = Memcached::Client.new)
     end
 
-    def write(key : K, value : V, *, expires_in = @expires_in)
+    private def write_entry(key : K, value : V, *, expires_in = @expires_in)
       @cache.set(key, value.to_s, expires_in.total_seconds.to_i)
     end
 
-    def read(key : K)
+    private def read_entry(key : K)
       @cache.get(key)
-    end
-
-    def fetch(key : K, *, expires_in = @expires_in, &block)
-      value = read(key)
-      return value if value
-
-      value = yield
-
-      write(key, value, expires_in: expires_in)
-      value
     end
 
     def delete(key : K) : Bool

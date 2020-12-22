@@ -1,4 +1,4 @@
-require "yaml"
+require "./entry"
 
 module Cache
   # An abstract cache store class.
@@ -13,6 +13,27 @@ module Cache
     @keys : Set(String) = Set(String).new
 
     property keys
+
+    # Writes the `value` to the cache, with the `key`.
+    #
+    # Optional `expires_in` will set an expiration time on the `key`.
+    #
+    # Options are passed to the underlying cache implementation.
+    def write(key : K, value : V, *, expires_in = @expires_in)
+      instrument(:write, key) do
+        write_entry(key, value, expires_in: expires_in)
+      end
+    end
+
+    # Reads data from the cache, using the given `key`.
+    #
+    # If there is data in the cache with the given `key`, then that data is returned.
+    # Otherwise, `nil` is returned.
+    def read(key : K)
+      instrument(:read, key) do
+        read_entry(key)
+      end
+    end
 
     # Fetches data from the cache, using the given `key`. If there is data in the cache
     # with the given `key`, then that data is returned.
@@ -31,20 +52,24 @@ module Cache
     #   Time.utc.day_of_week
     # end
     # ```
-    abstract def fetch(key : K, *, expires_in = @expires_in, &block)
+    def fetch(key : K, *, expires_in = @expires_in, &block)
+      value = read_entry(key)
+      return value unless value.nil?
 
-    # Writes the `value` to the cache, with the `key`.
-    #
-    # Optional `expires_in` will set an expiration time on the `key`.
-    #
-    # Options are passed to the underlying cache implementation.
-    abstract def write(key : K, value : V, *, expires_in = @expires_in)
+      value = yield
 
-    # Reads data from the cache, using the given `key`.
-    #
-    # If there is data in the cache with the given `key`, then that data is returned.
-    # Otherwise, `nil` is returned.
-    abstract def read(key : K)
+      write_entry(key, value, expires_in: expires_in)
+      value
+    end
+
+    private def instrument(operation, key, &block)
+      Log.debug { "Cache #{operation}: #{key}" }
+
+      yield
+    end
+
+    private abstract def write_entry(key : K, value : V, *, expires_in)
+    private abstract def read_entry(key : K)
 
     # Deletes an entry in the cache. Returns `true` if an entry is deleted.
     #
@@ -82,24 +107,6 @@ module Cache
 
         num -= amount
         write(key, num)
-      end
-    end
-
-    struct Entry(V)
-      include YAML::Serializable
-
-      @expires_at : Time
-
-      getter value
-      getter expires_at
-
-      def initialize(@value : V, expires_in : Time::Span)
-        @expires_at = Time.utc + expires_in
-      end
-
-      # Checks if the entry is expired.
-      def expired?
-        @expires_at && @expires_at <= Time.utc
       end
     end
   end

@@ -19,7 +19,7 @@ module Cache
     def initialize(@expires_in : Time::Span, @cache_path : String)
     end
 
-    def write(key : K, value : V, *, expires_in = @expires_in)
+    private def write_entry(key : K, value : V, *, expires_in = @expires_in)
       @keys << key
 
       file = File.join(@cache_path, key)
@@ -29,24 +29,14 @@ module Cache
       File.write(file, entry.to_yaml)
     end
 
-    def read(key : K)
-      entry = read_entry(key)
+    private def read_entry(key : K)
+      entry = entry_for(key)
 
       if entry && !entry.expired?
         entry.value
       else
         nil
       end
-    end
-
-    def fetch(key : K, *, expires_in = @expires_in, &block)
-      value = read(key)
-      return value unless value.nil?
-
-      value = yield
-
-      write(key, value, expires_in: expires_in)
-      value
     end
 
     def delete(key : K) : Bool
@@ -57,7 +47,7 @@ module Cache
     end
 
     def exists?(key : K) : Bool
-      entry = read_entry(key)
+      entry = entry_for(key)
       (entry && !entry.expired?) || false
     end
 
@@ -72,7 +62,7 @@ module Cache
       FileUtils.rm_r(files)
     end
 
-    private def read_entry(key : K)
+    private def entry_for(key : K)
       file = File.join(@cache_path, key)
 
       return nil unless File.exists?(file)
