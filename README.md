@@ -266,6 +266,14 @@ cache.fetch("today") do
 end
 ```
 
+## Logging
+
+For activation, simply setup the log to `:debug` level:
+
+```crystal
+Log.builder.bind "cache.*", :debug, Log::IOBackend.new
+```
+
 ## Contributing
 
 1. Fork it (<https://github.com/mamantoha/cache/fork>)
