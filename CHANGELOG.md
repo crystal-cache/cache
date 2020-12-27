@@ -2,6 +2,8 @@
 
 ## [...]
 
+* Add logging
+
 ## 0.10.0
 
 * Allow to set `false` as a value
