@@ -53,12 +53,12 @@ module Cache
     # end
     # ```
     def fetch(key : K, *, expires_in = @expires_in, &block)
-      value = read_entry(key)
+      value = read(key)
       return value unless value.nil?
 
       value = yield
 
-      write_entry(key, value, expires_in: expires_in)
+      write(key, value, expires_in: expires_in)
       value
     end
 
