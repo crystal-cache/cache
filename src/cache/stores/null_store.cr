@@ -8,21 +8,11 @@ module Cache
     def initialize(@expires_in : Time::Span)
     end
 
-    def write(key : K, value : V, *, expires_in = @expires_in)
+    private def write_entry(key : K, value : V, *, expires_in = @expires_in)
       @keys << key
     end
 
-    def read(key : K)
-    end
-
-    def fetch(key : K, *, expires_in = @expires_in, &block)
-      value = read(key)
-      return value if value
-
-      value = yield
-
-      write(key, value, expires_in: expires_in)
-      value
+    private def read_entry(key : K)
     end
 
     def delete(key : K) : Bool
