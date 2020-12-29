@@ -27,11 +27,11 @@ module Cache
     def initialize(@expires_in : Time::Span, @cache = Redis.new)
     end
 
-    private def write_entry(key : K, value : V, *, expires_in = @expires_in)
+    private def write_impl(key : K, value : V, *, expires_in = @expires_in)
       @cache.set(key, value, expires_in.total_seconds.to_i)
     end
 
-    private def read_entry(key : K)
+    private def read_impl(key : K)
       @cache.get(key)
     end
 

@@ -21,7 +21,7 @@ module Cache
     # Options are passed to the underlying cache implementation.
     def write(key : K, value : V, *, expires_in = @expires_in)
       instrument(:write, key) do
-        write_entry(key, value, expires_in: expires_in)
+        write_impl(key, value, expires_in: expires_in)
       end
     end
 
@@ -31,7 +31,7 @@ module Cache
     # Otherwise, `nil` is returned.
     def read(key : K)
       instrument(:read, key) do
-        read_entry(key)
+        read_impl(key)
       end
     end
 
@@ -68,8 +68,12 @@ module Cache
       yield
     end
 
-    private abstract def write_entry(key : K, value : V, *, expires_in)
-    private abstract def read_entry(key : K)
+    # Implementation of writing an entry.
+    private abstract def write_impl(key : K, value : V, *, expires_in)
+
+    # Implementation of reading an entry.
+    # Returns the entry, if it existed, `nil` otherwise.
+    private abstract def read_impl(key : K)
 
     # Deletes an entry in the cache. Returns `true` if an entry is deleted.
     #

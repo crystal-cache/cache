@@ -17,7 +17,7 @@ module Cache
       @cache = {} of K => Entry(V)
     end
 
-    private def write_entry(key : K, value : V, *, expires_in = @expires_in)
+    private def write_impl(key : K, value : V, *, expires_in = @expires_in)
       @keys << key
 
       {% if V.is_a?(String) %}
@@ -27,7 +27,7 @@ module Cache
       @cache[key] = Entry(V).new(value, expires_in)
     end
 
-    private def read_entry(key : K)
+    private def read_impl(key : K)
       entry = @cache[key]?
       value = nil
 

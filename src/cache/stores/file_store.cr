@@ -19,7 +19,7 @@ module Cache
     def initialize(@expires_in : Time::Span, @cache_path : String)
     end
 
-    private def write_entry(key : K, value : V, *, expires_in = @expires_in)
+    private def write_impl(key : K, value : V, *, expires_in = @expires_in)
       @keys << key
 
       file = File.join(@cache_path, key)
@@ -29,7 +29,7 @@ module Cache
       File.write(file, entry.to_yaml)
     end
 
-    private def read_entry(key : K)
+    private def read_impl(key : K)
       entry = entry_for(key)
 
       if entry && !entry.expired?
