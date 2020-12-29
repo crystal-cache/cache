@@ -2,6 +2,10 @@
 
 ## [...]
 
+## 0.11.1
+
+* Internal changes
+
 ## 0.11.0
 
 * Add logging
