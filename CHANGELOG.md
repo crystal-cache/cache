@@ -2,6 +2,10 @@
 
 ## [...]
 
+## 0.12.0
+
+* **breaking change** Split Redis and Memcached stores out into their own shards
+
 ## 0.11.1
 
 * Internal changes
