@@ -2,7 +2,7 @@
 
 A key/value store where pairs can expire after a specified interval
 
-[![Build Status](https://img.shields.io/travis/crystal-cache/cache.svg?style=flat)](https://travis-ci.org/crystal-cache/cache)
+[![Build Status](https://travis-ci.org/crystal-cache/cache.svg?branch=main)](https://travis-ci.org/crystal-cache/cache)
 [![GitHub release](https://img.shields.io/github/release/crystal-cache/cache.svg)](https://github.com/crystal-cache/cache/releases)
 [![License](https://img.shields.io/github/license/crystal-cache/cache.svg)](https://github.com/crystal-cache/cache/blob/main/LICENSE)
 
