@@ -2,9 +2,9 @@
 
 A key/value store where pairs can expire after a specified interval
 
-[![Build Status](https://img.shields.io/travis/mamantoha/cache.svg?style=flat)](https://travis-ci.org/mamantoha/cache)
-[![GitHub release](https://img.shields.io/github/release/mamantoha/cache.svg)](https://github.com/mamantoha/cache/releases)
-[![License](https://img.shields.io/github/license/mamantoha/cache.svg)](https://github.com/mamantoha/cache/blob/master/LICENSE)
+[![Build Status](https://img.shields.io/travis/crystal-cache/cache.svg?style=flat)](https://travis-ci.org/crystal-cache/cache)
+[![GitHub release](https://img.shields.io/github/release/crystal-cache/cache.svg)](https://github.com/crystal-cache/cache/releases)
+[![License](https://img.shields.io/github/license/crystal-cache/cache.svg)](https://github.com/crystal-cache/cache/blob/master/LICENSE)
 
 ## Installation
 
@@ -13,7 +13,7 @@ Add this to your application's `shard.yml`:
 ```yaml
 dependencies:
   cache:
-    github: mamantoha/cache
+    github: crystal-cache/cache
 ```
 
 ## Example
@@ -24,10 +24,9 @@ and to reuse it when responding to similar requests.
 The first time the result is returned from the query it is stored in the query cache (in memory)
 and the second time it's pulled from memory.
 
-However, it's important to note that Redis cache value must be string.
-But memory cache can store any serializable Crystal objects.
+Memory cache can store any serializable Crystal objects.
 
-Next example show how to get a single Github user and cache the result in Redis.
+Next example show how to get a single Github user and cache the result in memory.
 
 ```crystal
 require "http/client"
@@ -75,16 +74,16 @@ user.id # => 6539796
 * [x] Null store
 * [x] Memory
 * [x] Filesystem
-* [x] Redis
-* [x] Memcached
-
-```crystal
-require "cache"
-```
 
 There are multiple cache store implementations,
 each having its own additional features. See the classes
 under the `/src/cache/stores` directory, e.g.
+
+### Third-party store implementations
+
+* [redis_cache](https://github.com/crystal-cache/postgres_cache)
+* [memcached_cache](https://github.com/crystal-cache/memchached_cache)
+* [postgres_cache](https://github.com/crystal-cache/postgres_cache)
 
 ### Commands
 
@@ -209,50 +208,6 @@ cache.fetch("today") do
 end
 ```
 
-### Redis
-
-A cache store implementation which stores data in Redis.
-
-```crystal
-cache = Cache::RedisStore(String, String).new(expires_in: 1.minute)
-cache.fetch("today") do
-  Time.utc.day_of_week
-end
-```
-
-This assumes Redis was started with a default configuration, and is listening on localhost, port 6379.
-
-You can connect to Redis by instantiating the `Redis` or `Redis::PooledClient` class.
-
-If you need to connect to a remote server or a different port, try:
-
-```crystal
-redis = Redis.new(host: "10.0.1.1", port: 6380, password: "my-secret-pw", database: "my-database")
-cache = Cache::RedisStore(String, String).new(expires_in: 1.minute, cache: redis)
-```
-
-### Memcached
-
-A cache store implementation which stores data in Memcached.
-
-```crystal
-cache = Cache::MemcachedStore(String, String).new(expires_in: 1.minute)
-cache.fetch("today") do
-  Time.utc.day_of_week
-end
-```
-
-This assumes Memcached was started with a default configuration, and is listening on `localhost:11211`.
-
-You can connect to `Memcached` by instantiating the `Memcached::Client` class.
-
-If you need to connect to a remote server or a different port, try:
-
-```crystal
-memcached = Memcached::Client.new(host: "10.0.1.1", port: 11211)
-cache = Cache::MemcachedStore(String, String).new(expires_in: 1.minute, cache: memcached)
-```
-
 ### Null store
 
 A cache store implementation which doesn't actually store anything. Useful in
@@ -276,7 +231,7 @@ Log.builder.bind "cache.*", :debug, Log::IOBackend.new
 
 ## Contributing
 
-1. Fork it (<https://github.com/mamantoha/cache/fork>)
+1. Fork it (<https://github.com/crystal-cache/cache/fork>)
 2. Create your feature branch (git checkout -b my-new-feature)
 3. Commit your changes (git commit -am 'Add some feature')
 4. Push to the branch (git push origin my-new-feature)

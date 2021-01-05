@@ -4,14 +4,6 @@ version: 0.11.1
 authors:
   - Anton Maminov <anton.maminov@gmail.com>
 
-dependencies:
-  redis:
-    github: stefanwille/crystal-redis
-    version: ~> 2.6.0
-  memcached:
-    github: comandeo/crystal-memcached
-    branch: develop
-
 development_dependencies:
   ameba:
     github: crystal-ameba/ameba
