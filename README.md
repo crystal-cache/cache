@@ -81,9 +81,9 @@ under the `/src/cache/stores` directory, e.g.
 
 ### Third-party store implementations
 
-* [redis_cache](https://github.com/crystal-cache/redis_cache)
-* [memcached_cache](https://github.com/crystal-cache/memcached_cache)
-* [postgres_cache](https://github.com/crystal-cache/postgres_cache)
+* [redis_cache_store](https://github.com/crystal-cache/redis_cache_store)
+* [mem_cache_store](https://github.com/crystal-cache/mem_cache_store)
+* [postgres_cache_store](https://github.com/crystal-cache/postgres_cache_store)
 
 ### Commands
 

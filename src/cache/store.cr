@@ -46,7 +46,7 @@ module Cache
     # or it can be supplied to the `fetch` or `write` method to effect just one entry.
     #
     # ```crystal
-    # cache = Cache::RedisStore(String, String).new(expires_in: 1.hours)
+    # cache = Cache::MemoryStore(String, String).new(expires_in: 1.hours)
     # # Set a lower value for one entry
     # cache.fetch("today", expires_in: 10.minutes) do
     #   Time.utc.day_of_week
