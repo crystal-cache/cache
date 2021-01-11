@@ -4,7 +4,7 @@ require "file_utils"
 module Cache
   # A cache store implementation which stores everything on the filesystem.
   #
-  # ```crystal
+  # ```
   # cache_path = "#{__DIR__}/cache"
   # store = Cache::FileStore(String, String).new(expires_in: 12.hours, cache_path: cache_path)
   # cache.fetch("today") do

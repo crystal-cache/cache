@@ -106,6 +106,21 @@ describe Cache do
           value.should eq("bar")
         end
 
+        it "read nil if key does not exists" do
+          store = Cache::MemoryStore(String, String).new(expires_in: 12.hours, compress: compress)
+
+          value = store.read("foo")
+          value.should eq(nil)
+        end
+
+        it "fetch without block" do
+          store = Cache::MemoryStore(String, String).new(expires_in: 12.hours, compress: compress)
+          store.write("foo", "bar")
+
+          value = store.fetch("foo")
+          value.should eq("bar")
+        end
+
         it "set a custom expires_in value for one entry on write" do
           store = Cache::MemoryStore(String, String).new(expires_in: 12.hours, compress: compress)
           store.write("foo", "bar", expires_in: 1.second)

@@ -45,7 +45,7 @@ module Cache
     # This value can be specified as an option to the constructor (in which case all entries will be affected),
     # or it can be supplied to the `fetch` or `write` method to effect just one entry.
     #
-    # ```crystal
+    # ```
     # cache = Cache::MemoryStore(String, String).new(expires_in: 1.hours)
     # # Set a lower value for one entry
     # cache.fetch("today", expires_in: 10.minutes) do
@@ -60,6 +60,11 @@ module Cache
 
       write(key, value, expires_in: expires_in)
       value
+    end
+
+    # :nodoc:
+    def fetch(key : K)
+      read(key)
     end
 
     private def instrument(operation, key, &block)
