@@ -9,5 +9,6 @@ crystal: ">= 0.35.1"
 development_dependencies:
   ameba:
     github: crystal-ameba/ameba
+    branch: develop
 
 license: MIT
