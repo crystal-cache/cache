@@ -1,0 +1,50 @@
+name: Crystal CI
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  check_format:
+    runs-on: ubuntu-latest
+    container: crystallang/crystal
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: shards install --ignore-crystal-version
+
+      - name: Check format
+        run: crystal tool format --check
+  check_ameba:
+    runs-on: ubuntu-latest
+    container: crystallang/crystal
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: shards install --ignore-crystal-version
+
+      - name: Check ameba
+        run: ./bin/ameba
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        crystal: ["crystallang/crystal", "crystallang/crystal:nightly"]
+    container: ${{ matrix.crystal }}
+    steps:
+      # Downloads a copy of the code in your repository before running CI tests
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      # Performs a clean installation of all dependencies in the `shard.yml` file
+      - name: Install dependencies
+        run: shards install --ignore-crystal-version
+
+      - name: Run tests
+        run: crystal spec
