@@ -10,7 +10,7 @@ module Cache
   # under the `/src/cache/stores` directory, e.g.
   # All implementations should support method , `write`, `read`, `fetch`, and `delete`.
   abstract struct Store(K, V)
-    @keys : Set(String) = Set(String).new
+    @keys : Set(K) = Set(K).new
 
     property keys
 
