@@ -2,10 +2,24 @@ require "./spec_helper"
 
 describe Cache do
   context Cache::MemoryStore do
-    it "initialize" do
-      store = Cache::MemoryStore(String, String).new(expires_in: 12.hours)
+    context "initialize" do
+      it "String as key" do
+        store = Cache::MemoryStore(String, String).new(expires_in: 12.hours)
 
-      store.should be_a(Cache::Store(String, String))
+        store.should be_a(Cache::Store(String, String))
+      end
+
+      it "with union Int32 | String as key" do
+        store = Cache::MemoryStore(Int32 | String, String).new(expires_in: 12.hours)
+
+        store.should be_a(Cache::Store(Int32 | String, String))
+
+        store.fetch("foo") { "bar" }
+        store.fetch(1) { "baz" }
+        store.keys.should eq(Set{"foo", 1})
+        store.read("foo").should eq("bar")
+        store.read(1).should eq("baz")
+      end
     end
 
     [true, false].each do |compress|
