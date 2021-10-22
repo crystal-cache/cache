@@ -2,6 +2,10 @@
 
 ## [...]
 
+## 0.13.0
+
+* Store keys as the actual key datatype, not String. by @rymiel in https://github.com/crystal-cache/cache/pull/29
+
 ## 0.12.1
 
 * Internal changes
