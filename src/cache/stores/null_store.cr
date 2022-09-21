@@ -15,13 +15,13 @@ module Cache
     private def read_impl(key : K)
     end
 
-    def delete(key : K) : Bool
+    private def delete_impl(key : K) : Bool
       @keys.delete(key)
 
       true
     end
 
-    def exists?(key : K) : Bool
+    private def exists_impl(key : K) : Bool
       @keys.includes?(key)
     end
 

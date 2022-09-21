@@ -14,25 +14,7 @@ module Cache
 
     property keys
 
-    # Writes the `value` to the cache, with the `key`.
-    #
-    # Optional `expires_in` will set an expiration time on the `key`.
-    #
-    # Options are passed to the underlying cache implementation.
-    def write(key : K, value : V, *, expires_in = @expires_in)
-      instrument(:write, key) do
-        write_impl(key, value, expires_in: expires_in)
-      end
-    end
-
-    # Reads data from the cache, using the given `key`.
-    #
-    # If there is data in the cache with the given `key`, then that data is returned.
-    # Otherwise, `nil` is returned.
-    def read(key : K)
-      instrument(:read, key) do
-        read_impl(key)
-      end
+    def initialize(@namespace : String?)
     end
 
     # Fetches data from the cache, using the given `key`. If there is data in the cache
@@ -67,6 +49,45 @@ module Cache
       read(key)
     end
 
+    # Writes the `value` to the cache, with the `key`.
+    #
+    # Optional `expires_in` will set an expiration time on the `key`.
+    #
+    # Options are passed to the underlying cache implementation.
+    def write(key : K, value : V, *, expires_in = @expires_in)
+      key = namespace_key(key)
+
+      instrument(:write, key) do
+        write_impl(key, value, expires_in: expires_in)
+      end
+    end
+
+    # Reads data from the cache, using the given `key`.
+    #
+    # If there is data in the cache with the given `key`, then that data is returned.
+    # Otherwise, `nil` is returned.
+    def read(key : K)
+      key = namespace_key(key)
+
+      instrument(:read, key) do
+        read_impl(key)
+      end
+    end
+
+    def delete(key : K) : Bool
+      key = namespace_key(key)
+
+      instrument(:delete, key) do
+        delete_impl(key)
+      end
+    end
+
+    def exists?(key : K) : Bool
+      key = namespace_key(key)
+
+      exists_impl(key)
+    end
+
     private def instrument(operation, key, &block)
       Log.debug { "Cache #{operation}: #{key}" }
 
@@ -83,12 +104,12 @@ module Cache
     # Deletes an entry in the cache. Returns `true` if an entry is deleted.
     #
     # Options are passed to the underlying cache implementation.
-    abstract def delete(key : K) : Bool
+    private abstract def delete_impl(key : K) : Bool
 
     # Returns true if the cache contains an entry for the given key.
     #
     # Options are passed to the underlying cache implementation.
-    abstract def exists?(key : K) : Bool
+    private abstract def exists_impl(key : K) : Bool
 
     # Deletes all entries from the cache.
     #
@@ -116,6 +137,14 @@ module Cache
 
         num -= amount
         write(key, num)
+      end
+    end
+
+    private def namespace_key(key : K) : String | K
+      if @namespace
+        "#{@namespace}:#{key}"
+      else
+        key
       end
     end
   end

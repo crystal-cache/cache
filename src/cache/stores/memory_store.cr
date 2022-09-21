@@ -42,13 +42,13 @@ module Cache
       value
     end
 
-    def delete(key : K) : Bool
+    private def delete_impl(key : K) : Bool
       @keys.delete(key)
 
       @cache.delete(key).nil? ? false : true
     end
 
-    def exists?(key : K) : Bool
+    private def exists_impl(key : K) : Bool
       entry = @cache[key]?
       (entry && !entry.expired?) || false
     end
