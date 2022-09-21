@@ -9,9 +9,11 @@ describe Cache::Log do
       store = Cache::MemoryStore(String, String).new(expires_in: 1.second)
 
       store.fetch("foo") { "bar" }
+      store.delete("foo")
 
       read.gets.should match(/DEBUG - cache: Cache read: foo/)
       read.gets.should match(/DEBUG - cache: Cache write: foo/)
+      read.gets.should match(/DEBUG - cache: Cache delete: foo/)
     end
 
     Log.builder.clear
