@@ -39,14 +39,14 @@ module Cache
       end
     end
 
-    def delete(key : K) : Bool
+    private def delete_impl(key : K) : Bool
       @keys.delete(key)
       File.delete(File.join(@cache_path, key))
 
       true
     end
 
-    def exists?(key : K) : Bool
+    private def exists_impl(key : K) : Bool
       entry = entry_for(key)
       (entry && !entry.expired?) || false
     end
