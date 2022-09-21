@@ -11,11 +11,9 @@ module Cache
   # All implementations should support method , `write`, `read`, `fetch`, and `delete`.
   abstract struct Store(K, V)
     @keys : Set(K) = Set(K).new
+    @namespace : String? = nil
 
     property keys
-
-    def initialize(@namespace : String?)
-    end
 
     # Fetches data from the cache, using the given `key`. If there is data in the cache
     # with the given `key`, then that data is returned.
