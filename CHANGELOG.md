@@ -2,6 +2,12 @@
 
 ## [...]
 
+## 0.14.0
+
+* **breaking change** underlying cache implementations must implement `delete_impl` and `exists_impl` methods instead of `delete` and `exists?` accordingly
+* **breaking change** Added `namespace` property to `Cache::Store`. It can be used by underlying cache implementations for keys with namespace
+* Logging `delete` method
+
 ## 0.13.0
 
 * Store keys as the actual key datatype, not String. by @rymiel in https://github.com/crystal-cache/cache/pull/29
