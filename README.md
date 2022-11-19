@@ -82,6 +82,7 @@ under the `/src/cache/stores` directory, e.g.
 ### Third-party store implementations
 
 * [redis_cache_store](https://github.com/crystal-cache/redis_cache_store)
+* [redis_legacy_cache_store](https://github.com/crystal-cache/redis_legacy_cache_store)
 * [mem_cache_store](https://github.com/crystal-cache/mem_cache_store)
 * [postgres_cache_store](https://github.com/crystal-cache/postgres_cache_store)
 * [mysql_cache_store](https://github.com/crystal-cache/mysql_cache_store)
