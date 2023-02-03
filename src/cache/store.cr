@@ -32,7 +32,7 @@ module Cache
     #   Time.utc.day_of_week
     # end
     # ```
-    def fetch(key : K, *, expires_in = @expires_in, &block)
+    def fetch(key : K, *, expires_in = @expires_in, &)
       value = read(key)
       return value unless value.nil?
 
@@ -86,7 +86,7 @@ module Cache
       exists_impl(key)
     end
 
-    private def instrument(operation, key, &block)
+    private def instrument(operation, key, &)
       Log.debug { "Cache #{operation}: #{key}" }
 
       yield
