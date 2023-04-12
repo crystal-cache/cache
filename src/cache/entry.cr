@@ -5,18 +5,22 @@ module Cache
   struct Entry(V)
     include YAML::Serializable
 
-    @expires_at : Time
+    @expires_at : Time?
 
     getter value
     getter expires_at
 
-    def initialize(@value : V, expires_in : Time::Span)
-      @expires_at = Time.utc + expires_in
+    def initialize(@value : V, expires_in : Time::Span? = nil)
+      @expires_at = Time.utc + expires_in if !expires_in.nil?
     end
 
     # Checks if the entry is expired.
     def expired?
-      @expires_at && @expires_at <= Time.utc
+      if !(expires_at = @expires_at).nil?
+        return expires_at <= Time.utc
+      end
+
+      false
     end
   end
 end
