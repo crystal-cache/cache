@@ -10,7 +10,6 @@ module Cache
   # under the `/src/cache/stores` directory, e.g.
   # All implementations should support method , `write`, `read`, `fetch`, and `delete`.
   abstract struct Store(K, V)
-    @expires_in : Time::Span?
     @keys : Set(K) = Set(K).new
     @namespace : String? = nil
 
