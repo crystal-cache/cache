@@ -74,7 +74,7 @@ describe Cache do
           value = store.fetch("foo") { "bar" }
           value.should eq("bar")
 
-          sleep 2
+          sleep 2.seconds
 
           value = store.fetch("foo") { "baz" }
           value.should eq("baz")
@@ -86,7 +86,7 @@ describe Cache do
           value = store.fetch("foo", expires_in: 1.hours) { "bar" }
           value.should eq("bar")
 
-          sleep 2
+          sleep 2.seconds
 
           value = store.fetch("foo") { "baz" }
           value.should eq("bar")
@@ -98,7 +98,7 @@ describe Cache do
           value = store.fetch("foo", expires_in: 1.seconds) { "bar" }
           value.should eq("bar")
 
-          sleep 2
+          sleep 2.seconds
 
           value = store.fetch("foo") { "baz" }
           value.should eq("baz")
@@ -139,7 +139,7 @@ describe Cache do
           store = Cache::MemoryStore(String, String).new(expires_in: 12.hours, compress: compress)
           store.write("foo", "bar", expires_in: 1.second)
 
-          sleep 2
+          sleep 2.seconds
 
           value = store.read("foo")
           value.should eq(nil)
@@ -186,7 +186,7 @@ describe Cache do
 
           store.write("foo", "bar")
 
-          sleep 2
+          sleep 2.seconds
 
           store.exists?("foo").should eq(false)
         end
