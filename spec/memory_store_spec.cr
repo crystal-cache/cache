@@ -108,7 +108,7 @@ describe Cache do
           store = Cache::MemoryStore(String, String).new(expires_in: 12.hours, compress: compress)
           store.write("foo", "bar", expires_in: 1.minute)
 
-          value = store.fetch("foo") { "bar" }
+          value = store.fetch("foo") { "baz" }
           value.should eq("bar")
         end
 
@@ -169,6 +169,7 @@ describe Cache do
 
           value = store.read("foo")
           value.should eq(nil)
+          store.keys.should eq(Set(String).new)
           store.keys.should be_empty
         end
 
