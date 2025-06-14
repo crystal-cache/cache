@@ -34,8 +34,6 @@ module Cache
 
       if entry && !entry.expired?
         entry.value
-      else
-        nil
       end
     end
 
