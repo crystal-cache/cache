@@ -117,6 +117,21 @@ describe Cache do
       value.should eq("bar")
     end
 
+    it "read nil if key does not exists" do
+      store = Cache::FileStore(String, String).new(expires_in: 12.hours, cache_path: cache_path)
+
+      value = store.read("foo")
+      value.should be_nil
+    end
+
+    it "fetch without block" do
+      store = Cache::FileStore(String, String).new(expires_in: 12.hours, cache_path: cache_path)
+      store.write("foo", "bar")
+
+      value = store.fetch("foo")
+      value.should eq("bar")
+    end
+
     it "set a custom expires_in value for one entry on write" do
       freeze do |time|
         store = Cache::FileStore(String, String).new(12.hours, cache_path: cache_path)
