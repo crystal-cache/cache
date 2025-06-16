@@ -69,39 +69,45 @@ describe Cache do
         end
 
         it "don't fetch from cache if expires" do
-          store = Cache::MemoryStore(String, String).new(expires_in: 1.seconds, compress: compress)
+          freeze do |time|
+            store = Cache::MemoryStore(String, String).new(expires_in: 1.seconds, compress: compress)
 
-          value = store.fetch("foo") { "bar" }
-          value.should eq("bar")
+            value = store.fetch("foo") { "bar" }
+            value.should eq("bar")
 
-          sleep 2.seconds
+            Timecop.travel(time + 2.seconds)
 
-          value = store.fetch("foo") { "baz" }
-          value.should eq("baz")
+            value = store.fetch("foo") { "baz" }
+            value.should eq("baz")
+          end
         end
 
         it "fetch with expires_in from cache" do
-          store = Cache::MemoryStore(String, String).new(expires_in: 1.seconds, compress: compress)
+          freeze do |time|
+            store = Cache::MemoryStore(String, String).new(expires_in: 1.seconds, compress: compress)
 
-          value = store.fetch("foo", expires_in: 1.hours) { "bar" }
-          value.should eq("bar")
+            value = store.fetch("foo", expires_in: 1.hours) { "bar" }
+            value.should eq("bar")
 
-          sleep 2.seconds
+            Timecop.travel(time + 2.seconds)
 
-          value = store.fetch("foo") { "baz" }
-          value.should eq("bar")
+            value = store.fetch("foo") { "baz" }
+            value.should eq("bar")
+          end
         end
 
         it "don't fetch with expires_in from cache if expires" do
-          store = Cache::MemoryStore(String, String).new(expires_in: 12.hours, compress: compress)
+          freeze do |time|
+            store = Cache::MemoryStore(String, String).new(expires_in: 12.hours, compress: compress)
 
-          value = store.fetch("foo", expires_in: 1.seconds) { "bar" }
-          value.should eq("bar")
+            value = store.fetch("foo", expires_in: 1.seconds) { "bar" }
+            value.should eq("bar")
 
-          sleep 2.seconds
+            Timecop.travel(time + 2.seconds)
 
-          value = store.fetch("foo") { "baz" }
-          value.should eq("baz")
+            value = store.fetch("foo") { "baz" }
+            value.should eq("baz")
+          end
         end
 
         it "write" do
@@ -136,13 +142,15 @@ describe Cache do
         end
 
         it "set a custom expires_in value for one entry on write" do
-          store = Cache::MemoryStore(String, String).new(expires_in: 12.hours, compress: compress)
-          store.write("foo", "bar", expires_in: 1.second)
+          freeze do |time|
+            store = Cache::MemoryStore(String, String).new(expires_in: 12.hours, compress: compress)
+            store.write("foo", "bar", expires_in: 1.second)
 
-          sleep 2.seconds
+            Timecop.travel(time + 2.seconds)
 
-          value = store.read("foo")
-          value.should be_nil
+            value = store.read("foo")
+            value.should be_nil
+          end
         end
 
         it "delete from cache" do
@@ -183,13 +191,15 @@ describe Cache do
         end
 
         it "#exists? expires" do
-          store = Cache::MemoryStore(String, String).new(expires_in: 1.second, compress: compress)
+          freeze do |time|
+            store = Cache::MemoryStore(String, String).new(expires_in: 1.second, compress: compress)
 
-          store.write("foo", "bar")
+            store.write("foo", "bar")
 
-          sleep 2.seconds
+            Timecop.travel(time + 2.seconds)
 
-          store.exists?("foo").should be_false
+            store.exists?("foo").should be_false
+          end
         end
 
         it "#increment" do
