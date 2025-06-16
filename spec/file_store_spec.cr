@@ -60,46 +60,52 @@ describe Cache do
     end
 
     it "don't fetch from cache if expired" do
-      store = Cache::FileStore(String, String).new(1.seconds, cache_path: cache_path)
+      freeze do |time|
+        store = Cache::FileStore(String, String).new(1.seconds, cache_path: cache_path)
 
-      value = store.fetch("foo") { "bar" }
-      value.should eq("bar")
+        value = store.fetch("foo") { "bar" }
+        value.should eq("bar")
 
-      sleep 2.seconds
+        Timecop.travel(time + 2.seconds)
 
-      value = store.fetch("foo") { "baz" }
-      value.should eq("baz")
+        value = store.fetch("foo") { "baz" }
+        value.should eq("baz")
+      end
     end
 
     it "fetch with expires_in from cache" do
-      store = Cache::FileStore(String, String).new(1.seconds, cache_path: cache_path)
+      freeze do |time|
+        store = Cache::FileStore(String, String).new(1.seconds, cache_path: cache_path)
 
-      value = store.fetch("foo", expires_in: 1.hours) { "bar" }
-      value.should eq("bar")
+        value = store.fetch("foo", expires_in: 1.hours) { "bar" }
+        value.should eq("bar")
 
-      sleep 2.seconds
+        Timecop.travel(time + 2.seconds)
 
-      value = store.fetch("foo") { "baz" }
-      value.should eq("bar")
+        value = store.fetch("foo") { "baz" }
+        value.should eq("bar")
+      end
     end
 
     it "don't fetch with expires_in from cache if expires" do
-      store = Cache::FileStore(String, String).new(12.hours, cache_path: cache_path)
+      freeze do |time|
+        store = Cache::FileStore(String, String).new(12.hours, cache_path: cache_path)
 
-      value = store.fetch("foo", expires_in: 1.seconds) { "bar" }
-      value.should eq("bar")
+        value = store.fetch("foo", expires_in: 1.seconds) { "bar" }
+        value.should eq("bar")
 
-      sleep 2.seconds
+        Timecop.travel(time + 2.seconds)
 
-      value = store.fetch("foo") { "baz" }
-      value.should eq("baz")
+        value = store.fetch("foo") { "baz" }
+        value.should eq("baz")
+      end
     end
 
     it "write" do
       store = Cache::FileStore(String, String).new(12.hours, cache_path: cache_path)
       store.write("foo", "bar", expires_in: 1.minute)
 
-      value = store.fetch("foo") { "bar" }
+      value = store.fetch("foo") { "baz" }
       value.should eq("bar")
     end
 
@@ -111,14 +117,31 @@ describe Cache do
       value.should eq("bar")
     end
 
-    it "set a custom expires_in value for one entry on write" do
-      store = Cache::FileStore(String, String).new(12.hours, cache_path: cache_path)
-      store.write("foo", "bar", expires_in: 1.second)
-
-      sleep 2.seconds
+    it "read nil if key does not exists" do
+      store = Cache::FileStore(String, String).new(expires_in: 12.hours, cache_path: cache_path)
 
       value = store.read("foo")
       value.should be_nil
+    end
+
+    it "fetch without block" do
+      store = Cache::FileStore(String, String).new(expires_in: 12.hours, cache_path: cache_path)
+      store.write("foo", "bar")
+
+      value = store.fetch("foo")
+      value.should eq("bar")
+    end
+
+    it "set a custom expires_in value for one entry on write" do
+      freeze do |time|
+        store = Cache::FileStore(String, String).new(12.hours, cache_path: cache_path)
+        store.write("foo", "bar", expires_in: 1.second)
+
+        Timecop.travel(time + 2.seconds)
+
+        value = store.read("foo")
+        value.should be_nil
+      end
     end
 
     it "delete from cache" do
@@ -160,13 +183,15 @@ describe Cache do
     end
 
     it "#exists? expires" do
-      store = Cache::FileStore(String, String).new(1.second, cache_path: cache_path)
+      freeze do |time|
+        store = Cache::FileStore(String, String).new(1.second, cache_path: cache_path)
 
-      store.write("foo", "bar")
+        store.write("foo", "bar")
 
-      sleep 2.seconds
+        Timecop.travel(time + 2.seconds)
 
-      store.exists?("foo").should be_false
+        store.exists?("foo").should be_false
+      end
     end
 
     it "#increment" do
