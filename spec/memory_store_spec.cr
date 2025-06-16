@@ -62,10 +62,10 @@ describe Cache do
           store = Cache::MemoryStore(String, String | Bool).new(expires_in: 12.hours, compress: compress)
 
           value = store.fetch("foo") { false }
-          value.should eq(false)
+          value.should be_false
 
           value = store.fetch("foo") { "bar" }
-          value.should eq(false)
+          value.should be_false
         end
 
         it "don't fetch from cache if expires" do
@@ -74,7 +74,7 @@ describe Cache do
           value = store.fetch("foo") { "bar" }
           value.should eq("bar")
 
-          sleep 2
+          sleep 2.seconds
 
           value = store.fetch("foo") { "baz" }
           value.should eq("baz")
@@ -86,7 +86,7 @@ describe Cache do
           value = store.fetch("foo", expires_in: 1.hours) { "bar" }
           value.should eq("bar")
 
-          sleep 2
+          sleep 2.seconds
 
           value = store.fetch("foo") { "baz" }
           value.should eq("bar")
@@ -98,7 +98,7 @@ describe Cache do
           value = store.fetch("foo", expires_in: 1.seconds) { "bar" }
           value.should eq("bar")
 
-          sleep 2
+          sleep 2.seconds
 
           value = store.fetch("foo") { "baz" }
           value.should eq("baz")
@@ -108,7 +108,7 @@ describe Cache do
           store = Cache::MemoryStore(String, String).new(expires_in: 12.hours, compress: compress)
           store.write("foo", "bar", expires_in: 1.minute)
 
-          value = store.fetch("foo") { "bar" }
+          value = store.fetch("foo") { "baz" }
           value.should eq("bar")
         end
 
@@ -124,7 +124,7 @@ describe Cache do
           store = Cache::MemoryStore(String, String).new(expires_in: 12.hours, compress: compress)
 
           value = store.read("foo")
-          value.should eq(nil)
+          value.should be_nil
         end
 
         it "fetch without block" do
@@ -139,10 +139,10 @@ describe Cache do
           store = Cache::MemoryStore(String, String).new(expires_in: 12.hours, compress: compress)
           store.write("foo", "bar", expires_in: 1.second)
 
-          sleep 2
+          sleep 2.seconds
 
           value = store.read("foo")
-          value.should eq(nil)
+          value.should be_nil
         end
 
         it "delete from cache" do
@@ -152,10 +152,10 @@ describe Cache do
           value.should eq("bar")
 
           result = store.delete("foo")
-          result.should eq(true)
+          result.should be_true
 
           value = store.read("foo")
-          value.should eq(nil)
+          value.should be_nil
           store.keys.should eq(Set(String).new)
         end
 
@@ -168,7 +168,8 @@ describe Cache do
           store.clear
 
           value = store.read("foo")
-          value.should eq(nil)
+          value.should be_nil
+          store.keys.should eq(Set(String).new)
           store.keys.should be_empty
         end
 
@@ -177,8 +178,8 @@ describe Cache do
 
           store.write("foo", "bar")
 
-          store.exists?("foo").should eq(true)
-          store.exists?("foz").should eq(false)
+          store.exists?("foo").should be_true
+          store.exists?("foz").should be_false
         end
 
         it "#exists? expires" do
@@ -186,9 +187,9 @@ describe Cache do
 
           store.write("foo", "bar")
 
-          sleep 2
+          sleep 2.seconds
 
-          store.exists?("foo").should eq(false)
+          store.exists?("foo").should be_false
         end
 
         it "#increment" do

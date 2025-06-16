@@ -36,10 +36,10 @@ describe Cache do
       value.should eq("bar")
 
       result = store.delete("foo")
-      result.should eq(true)
+      result.should be_true
 
       value = store.read("foo")
-      value.should eq(nil)
+      value.should be_nil
       store.keys.should eq(Set(String).new)
     end
 

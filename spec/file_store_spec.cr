@@ -53,10 +53,10 @@ describe Cache do
       store = Cache::FileStore(String, String | Bool).new(expires_in: 12.hours, cache_path: cache_path)
 
       value = store.fetch("foo") { false }
-      value.should eq(false)
+      value.should be_false
 
       value = store.fetch("foo") { "bar" }
-      value.should eq(false)
+      value.should be_false
     end
 
     it "don't fetch from cache if expired" do
@@ -65,7 +65,7 @@ describe Cache do
       value = store.fetch("foo") { "bar" }
       value.should eq("bar")
 
-      sleep 2
+      sleep 2.seconds
 
       value = store.fetch("foo") { "baz" }
       value.should eq("baz")
@@ -77,7 +77,7 @@ describe Cache do
       value = store.fetch("foo", expires_in: 1.hours) { "bar" }
       value.should eq("bar")
 
-      sleep 2
+      sleep 2.seconds
 
       value = store.fetch("foo") { "baz" }
       value.should eq("bar")
@@ -89,7 +89,7 @@ describe Cache do
       value = store.fetch("foo", expires_in: 1.seconds) { "bar" }
       value.should eq("bar")
 
-      sleep 2
+      sleep 2.seconds
 
       value = store.fetch("foo") { "baz" }
       value.should eq("baz")
@@ -115,10 +115,10 @@ describe Cache do
       store = Cache::FileStore(String, String).new(12.hours, cache_path: cache_path)
       store.write("foo", "bar", expires_in: 1.second)
 
-      sleep 2
+      sleep 2.seconds
 
       value = store.read("foo")
-      value.should eq(nil)
+      value.should be_nil
     end
 
     it "delete from cache" do
@@ -129,10 +129,10 @@ describe Cache do
       File.exists?(File.join(cache_path, "foo")).should be_true
 
       result = store.delete("foo")
-      result.should eq(true)
+      result.should be_true
 
       value = store.read("foo")
-      value.should eq(nil)
+      value.should be_nil
       File.exists?(File.join(cache_path, "foo")).should be_false
       store.keys.should be_empty
     end
@@ -155,8 +155,8 @@ describe Cache do
 
       store.write("foo", "bar")
 
-      store.exists?("foo").should eq(true)
-      store.exists?("foz").should eq(false)
+      store.exists?("foo").should be_true
+      store.exists?("foz").should be_false
     end
 
     it "#exists? expires" do
@@ -164,9 +164,9 @@ describe Cache do
 
       store.write("foo", "bar")
 
-      sleep 2
+      sleep 2.seconds
 
-      store.exists?("foo").should eq(false)
+      store.exists?("foo").should be_false
     end
 
     it "#increment" do
