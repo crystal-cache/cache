@@ -105,7 +105,7 @@ describe Cache do
       store = Cache::FileStore(String, String).new(12.hours, cache_path: cache_path)
       store.write("foo", "bar", expires_in: 1.minute)
 
-      value = store.fetch("foo") { "bar" }
+      value = store.fetch("foo") { "baz" }
       value.should eq("bar")
     end
 
