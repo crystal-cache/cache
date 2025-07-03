@@ -12,6 +12,7 @@ module Cache
   abstract struct Store(K, V)
     @keys : Set(K) = Set(K).new
     @namespace : String? = nil
+    @expires_in : Time::Span = Time::Span::ZERO
 
     property keys
 
