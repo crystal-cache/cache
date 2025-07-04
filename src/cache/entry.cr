@@ -10,7 +10,7 @@ module Cache
     getter value
     getter expires_at
 
-    def initialize(@value : V, expires_in : Time::Span)
+    def initialize(@value : V, expires_in : Time::Span = Time::Span::ZERO)
       @expires_at = Time.utc + expires_in
     end
 
