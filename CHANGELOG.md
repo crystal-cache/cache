@@ -2,6 +2,10 @@
 
 ## [...]
 
+## 0.15.0
+
+* Fixes can't infer the type of instance variable '@expires_in' of Cache::Store(String, String) - https://github.com/crystal-cache/cache/issues/38
+
 ## 0.14.0
 
 * **breaking change** underlying cache implementations must implement `delete_impl` and `exists_impl` methods instead of `delete` and `exists?` accordingly
