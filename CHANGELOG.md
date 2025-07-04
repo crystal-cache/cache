@@ -4,7 +4,9 @@
 
 ## 0.15.0
 
-* Fixes can't infer the type of instance variable '@expires_in' of Cache::Store(String, String) - https://github.com/crystal-cache/cache/issues/38
+* Refine spec in https://github.com/crystal-cache/cache/pull/36
+* Do not use sleep in specs in https://github.com/crystal-cache/cache/pull/37
+* Add add a type annotation for expires_in in https://github.com/crystal-cache/cache/pull/39 (fixes https://github.com/crystal-cache/cache/issues/38)
 
 ## 0.14.0
 
