@@ -139,8 +139,13 @@ describe Cache do
 
         Timecop.travel(time + 2.seconds)
 
+        File.exists?(File.join(cache_path, "foo")).should be_true
+        store.keys.should be_empty
+
         value = store.read("foo")
         value.should be_nil
+
+        File.exists?(File.join(cache_path, "foo")).should be_false
       end
     end
 

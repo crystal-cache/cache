@@ -22,7 +22,7 @@ module Cache
     private def write_impl(key : K, value : V, *, expires_in = @expires_in)
       all_keys << key
 
-      file = File.join(@cache_path, key)
+      file = key_file(key)
       entry = Entry(V).new(value, expires_in)
 
       ensure_cache_path(File.dirname(file))
@@ -30,32 +30,36 @@ module Cache
     end
 
     private def read_impl(key : K)
-      entry = entry_for(key)
+      if entry = entry_for(key)
+        if entry.expired?
+          delete_impl(key)
 
-      if entry && !entry.expired?
-        entry.value
+          nil
+        else
+          entry.value
+        end
       else
-        all_keys.delete(key) if entry && entry.expired?
-
         nil
       end
     end
 
     private def delete_impl(key : K) : Bool
       all_keys.delete(key)
-      File.delete(File.join(@cache_path, key))
+      File.delete(key_file(key))
 
       true
     end
 
     private def exists_impl(key : K) : Bool
-      entry = entry_for(key)
+      if entry = entry_for(key)
+        if entry.expired?
+          delete_impl(key)
 
-      if entry && !entry.expired?
-        true
+          false
+        else
+          true
+        end
       else
-        all_keys.delete(key) if entry && entry.expired?
-
         false
       end
     end
@@ -72,7 +76,7 @@ module Cache
     end
 
     private def entry_for(key : K)
-      file = File.join(@cache_path, key)
+      file = key_file(key)
 
       return nil unless File.exists?(file)
 
@@ -82,6 +86,10 @@ module Cache
     # Make sure a file path's directories exist.
     private def ensure_cache_path(path)
       FileUtils.mkdir_p(path) unless File.exists?(path)
+    end
+
+    private def key_file(key : K)
+      File.join(@cache_path, key)
     end
   end
 end
