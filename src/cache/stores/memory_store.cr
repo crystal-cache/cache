@@ -28,19 +28,21 @@ module Cache
     end
 
     private def read_impl(key : K)
-      entry = @cache[key]?
+      if entry = @cache[key]?
+        if entry.expired?
+          delete_impl(key)
 
-      if entry && !entry.expired?
-        value = entry.value
+          nil
+        else
+          value = entry.value
 
-        {% if V.is_a?(String) %}
-          value = Cache::DataCompressor.inflate(value) if @compress
-        {% end %}
+          {% if V.is_a?(String) %}
+            value = Cache::DataCompressor.inflate(value) if @compress
+          {% end %}
 
-        value
+          value
+        end
       else
-        all_keys.delete(key) if entry && entry.expired?
-
         nil
       end
     end
@@ -52,13 +54,15 @@ module Cache
     end
 
     private def exists_impl(key : K) : Bool
-      entry = @cache[key]?
+      if entry = @cache[key]?
+        if entry.expired?
+          delete_impl(key)
 
-      if entry && !entry.expired?
-        true
+          false
+        else
+          true
+        end
       else
-        all_keys.delete(key) if entry && entry.expired?
-
         false
       end
     end
