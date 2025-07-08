@@ -127,10 +127,6 @@ module Cache
       all_keys.clear
     end
 
-    private def cleanup_expired_keys
-      @keys.reject! { |key| !exists?(key) }
-    end
-
     # Increment an integer value in the cache.
     def increment(key : K, amount = 1)
       if num = read(key)
