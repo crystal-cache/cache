@@ -2,6 +2,8 @@
 
 ## [...]
 
+* Implement compression for `FileStore` https://github.com/crystal-cache/cache/pull/42
+
 ## 0.15.1
 
 * Return only non-expired keys in the cache https://github.com/crystal-cache/cache/pull/41
