@@ -14,7 +14,14 @@ module Cache
     @namespace : String? = nil
     @expires_in : Time::Span = Time::Span::ZERO
 
+    # Returns all keys in the cache, including expired ones.
+    # Use #valid_keys for only non-expired keys.
     property keys
+
+    # Returns only non-expired keys in the cache.
+    def valid_keys : Set(K)
+      @keys.select { |key| exists?(key) }.to_set
+    end
 
     # Fetches data from the cache, using the given `key`. If there is data in the cache
     # with the given `key`, then that data is returned.
@@ -117,6 +124,10 @@ module Cache
 
     private def clear_keys
       @keys.clear
+    end
+
+    private def cleanup_expired_keys
+      @keys.reject! { |key| !exists?(key) }
     end
 
     # Increment an integer value in the cache.

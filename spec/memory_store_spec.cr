@@ -265,6 +265,27 @@ describe Cache do
             result.should eq(data)
           end
         end
+
+        it "removes expired keys from keys set" do
+          freeze do |time|
+            store = Cache::MemoryStore(String, String).new(expires_in: 1.second, compress: compress)
+
+            store.write("foo", "bar")
+            store.write("baz", "qux", expires_in: 5.seconds)
+
+            store.keys.should eq(Set{"foo", "baz"})
+            store.valid_keys.should eq(Set{"foo", "baz"})
+
+            Timecop.travel(time + 2.seconds)
+
+            # After expiration, foo should be removed from keys when accessed
+            store.exists?("foo").should be_false
+            store.exists?("baz").should be_true
+
+            store.keys.should eq(Set{"baz"})
+            store.valid_keys.should eq(Set{"baz"})
+          end
+        end
       end
     end
   end

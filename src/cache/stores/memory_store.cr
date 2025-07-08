@@ -29,7 +29,6 @@ module Cache
 
     private def read_impl(key : K)
       entry = @cache[key]?
-      value = nil
 
       if entry && !entry.expired?
         value = entry.value
@@ -37,9 +36,13 @@ module Cache
         {% if V.is_a?(String) %}
           value = Cache::DataCompressor.inflate(value) if @compress
         {% end %}
-      end
 
-      value
+        value
+      else
+        @keys.delete(key) if entry && entry.expired?
+
+        nil
+      end
     end
 
     private def delete_impl(key : K) : Bool
@@ -50,7 +53,14 @@ module Cache
 
     private def exists_impl(key : K) : Bool
       entry = @cache[key]?
-      (entry && !entry.expired?) || false
+
+      if entry && !entry.expired?
+        true
+      else
+        @keys.delete(key) if entry && entry.expired?
+
+        false
+      end
     end
 
     def clear

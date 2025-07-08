@@ -34,6 +34,10 @@ module Cache
 
       if entry && !entry.expired?
         entry.value
+      else
+        @keys.delete(key) if entry && entry.expired?
+
+        nil
       end
     end
 
@@ -46,7 +50,14 @@ module Cache
 
     private def exists_impl(key : K) : Bool
       entry = entry_for(key)
-      (entry && !entry.expired?) || false
+
+      if entry && !entry.expired?
+        true
+      else
+        @keys.delete(key) if entry && entry.expired?
+
+        false
+      end
     end
 
     def clear
