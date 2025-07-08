@@ -2,6 +2,10 @@
 
 ## [...]
 
+## 0.15.1
+
+* Return only non-expired keys in the cache https://github.com/crystal-cache/cache/pull/41
+
 ## 0.15.0
 
 * Refine spec in https://github.com/crystal-cache/cache/pull/36
