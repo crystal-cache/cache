@@ -14,7 +14,15 @@ module Cache
     @namespace : String? = nil
     @expires_in : Time::Span = Time::Span::ZERO
 
-    property keys
+    # Returns only non-expired keys in the cache.
+    def keys : Set(K)
+      @keys.select { |key| exists?(key) }.to_set
+    end
+
+    # Returns all keys in the cache, including expired ones (for internal use).
+    private def all_keys : Set(K)
+      @keys
+    end
 
     # Fetches data from the cache, using the given `key`. If there is data in the cache
     # with the given `key`, then that data is returned.
@@ -116,7 +124,7 @@ module Cache
     abstract def clear
 
     private def clear_keys
-      @keys.clear
+      all_keys.clear
     end
 
     # Increment an integer value in the cache.

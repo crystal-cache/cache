@@ -18,7 +18,7 @@ module Cache
     end
 
     private def write_impl(key : K, value : V, *, expires_in = @expires_in)
-      @keys << key
+      all_keys << key
 
       {% if V.is_a?(String) %}
         value = Cache::DataCompressor.deflate(value) if @compress
@@ -29,7 +29,6 @@ module Cache
 
     private def read_impl(key : K)
       entry = @cache[key]?
-      value = nil
 
       if entry && !entry.expired?
         value = entry.value
@@ -37,20 +36,31 @@ module Cache
         {% if V.is_a?(String) %}
           value = Cache::DataCompressor.inflate(value) if @compress
         {% end %}
-      end
 
-      value
+        value
+      else
+        all_keys.delete(key) if entry && entry.expired?
+
+        nil
+      end
     end
 
     private def delete_impl(key : K) : Bool
-      @keys.delete(key)
+      all_keys.delete(key)
 
       @cache.delete(key).nil? ? false : true
     end
 
     private def exists_impl(key : K) : Bool
       entry = @cache[key]?
-      (entry && !entry.expired?) || false
+
+      if entry && !entry.expired?
+        true
+      else
+        all_keys.delete(key) if entry && entry.expired?
+
+        false
+      end
     end
 
     def clear

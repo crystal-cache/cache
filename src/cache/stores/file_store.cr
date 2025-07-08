@@ -20,7 +20,7 @@ module Cache
     end
 
     private def write_impl(key : K, value : V, *, expires_in = @expires_in)
-      @keys << key
+      all_keys << key
 
       file = File.join(@cache_path, key)
       entry = Entry(V).new(value, expires_in)
@@ -34,11 +34,15 @@ module Cache
 
       if entry && !entry.expired?
         entry.value
+      else
+        all_keys.delete(key) if entry && entry.expired?
+
+        nil
       end
     end
 
     private def delete_impl(key : K) : Bool
-      @keys.delete(key)
+      all_keys.delete(key)
       File.delete(File.join(@cache_path, key))
 
       true
@@ -46,7 +50,14 @@ module Cache
 
     private def exists_impl(key : K) : Bool
       entry = entry_for(key)
-      (entry && !entry.expired?) || false
+
+      if entry && !entry.expired?
+        true
+      else
+        all_keys.delete(key) if entry && entry.expired?
+
+        false
+      end
     end
 
     def clear

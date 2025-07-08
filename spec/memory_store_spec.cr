@@ -265,6 +265,21 @@ describe Cache do
             result.should eq(data)
           end
         end
+
+        it "keys returns only non-expired keys" do
+          freeze do |time|
+            store = Cache::MemoryStore(String, String).new(expires_in: 1.second, compress: compress)
+
+            store.write("foo", "bar")
+            store.write("baz", "qux", expires_in: 5.seconds)
+
+            store.keys.should eq(Set{"foo", "baz"})
+
+            Timecop.travel(time + 2.seconds)
+
+            store.keys.should eq(Set{"baz"})
+          end
+        end
       end
     end
   end
