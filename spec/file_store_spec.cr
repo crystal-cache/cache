@@ -220,5 +220,42 @@ describe Cache do
 
       value.should eq(1)
     end
+
+    context "with compression" do
+      [false, true].each do |compress|
+        context "with compress #{compress}" do
+          it "compresses string values" do
+            store = Cache::FileStore(String, String).new(expires_in: 12.hours, cache_path: cache_path, compress: compress)
+
+            value = store.fetch("foo") { "bar" }
+            value.should eq("bar")
+
+            value = store.fetch("foo") { "baz" }
+            value.should eq("bar")
+          end
+
+          it "does not compress non-string values" do
+            store = Cache::FileStore(String, Int32).new(expires_in: 12.hours, cache_path: cache_path, compress: compress)
+
+            value = store.fetch("foo") { 42 }
+            value.should eq(42)
+
+            value = store.fetch("foo") { 100 }
+            value.should eq(42)
+          end
+
+          it "handles large string compression" do
+            store = Cache::FileStore(String, String).new(expires_in: 12.hours, cache_path: cache_path, compress: compress)
+
+            large_string = "x" * 1000
+            value = store.fetch("large") { large_string }
+            value.should eq(large_string)
+
+            value = store.fetch("large") { "different" }
+            value.should eq(large_string)
+          end
+        end
+      end
+    end
   end
 end

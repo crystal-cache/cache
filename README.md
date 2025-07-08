@@ -210,6 +210,18 @@ cache.fetch("today") do
 end
 ```
 
+Cached data for `FileStore(String, String)` are not compressed by default.
+To enable compression, pass `compress: true` to the initializer.
+
+For another type of keys `compress` option ignored.
+
+```crystal
+cache = Cache::FileStore(String, String).new(expires_in: 12.hours, cache_path: cache_path, compress: true)
+cache.fetch("today") do
+  Time.utc.day_of_week
+end
+```
+
 ### Null store
 
 A cache store implementation which doesn't actually store anything. Useful in

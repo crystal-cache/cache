@@ -4,6 +4,8 @@ require "file_utils"
 module Cache
   # A cache store implementation which stores everything on the filesystem.
   #
+  # Cached data are not compressed by default. To enable compression, pass `compress: true` to the initializer.
+  #
   # ```
   # cache_path = "#{__DIR__}/cache"
   # store = Cache::FileStore(String, String).new(expires_in: 12.hours, cache_path: cache_path)
@@ -16,11 +18,15 @@ module Cache
 
     property cache_path
 
-    def initialize(@expires_in : Time::Span, @cache_path : String)
+    def initialize(@expires_in : Time::Span, @cache_path : String, @compress : Bool = false)
     end
 
     private def write_impl(key : K, value : V, *, expires_in = @expires_in)
       all_keys << key
+
+      {% if V.is_a?(String) %}
+        value = Cache::DataCompressor.deflate(value) if @compress
+      {% end %}
 
       file = key_file(key)
       entry = Entry(V).new(value, expires_in)
@@ -36,7 +42,13 @@ module Cache
 
           nil
         else
-          entry.value
+          value = entry.value
+
+          {% if V.is_a?(String) %}
+            value = Cache::DataCompressor.inflate(value) if @compress
+          {% end %}
+
+          value
         end
       else
         nil
