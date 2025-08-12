@@ -12,7 +12,7 @@ jobs:
     container: crystallang/crystal
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install dependencies
         run: shards install
@@ -24,7 +24,7 @@ jobs:
     container: crystallang/crystal
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install dependencies
         run: shards install
@@ -40,7 +40,7 @@ jobs:
     steps:
       # Downloads a copy of the code in your repository before running CI tests
       - name: Check out repository code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       # Performs a clean installation of all dependencies in the `shard.yml` file
       - name: Install dependencies
