@@ -69,7 +69,7 @@ user.id # => 6539796
 
 ## Usage
 
-> **Note**: The cache API has been updated. Keys are now always strings, and the store interface uses a single type parameter `Store(V)` where `V` is the value type. The previous `Store(K, V)` interface has been removed.
+> **Note**: The cache API has been updated in version 1.0.0. Keys are now always strings, and the store interface uses a single type parameter `Store(V)` where `V` is the value type. The previous `Store(K, V)` interface has been removed.
 
 ### Available stores
 
