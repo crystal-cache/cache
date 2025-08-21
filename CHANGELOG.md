@@ -2,6 +2,7 @@
 
 ## [...]
 
+* **breaking change** Simplified store interface: `Store(K, V)` → `Store(V)` where keys are always strings https://github.com/crystal-cache/cache/pull/44
 * Implement compression for `FileStore` https://github.com/crystal-cache/cache/pull/42
 
 ## 0.15.1
