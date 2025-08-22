@@ -1,10 +1,10 @@
 # Caché
 
-A key/value store where pairs can expire after a specified interval. Keys are always strings, and values can be any serializable Crystal type.
-
 ![Crystal CI](https://github.com/crystal-cache/cache/workflows/Crystal%20CI/badge.svg)
 [![GitHub release](https://img.shields.io/github/release/crystal-cache/cache.svg)](https://github.com/crystal-cache/cache/releases)
 [![License](https://img.shields.io/github/license/crystal-cache/cache.svg)](https://github.com/crystal-cache/cache/blob/main/LICENSE)
+
+A key/value store where pairs can expire after a specified interval. Keys are always strings, and values can be any serializable Crystal type.
 
 ## Installation
 
