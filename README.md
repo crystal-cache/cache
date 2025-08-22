@@ -97,6 +97,7 @@ All store implementations support:
 * `write`
 * `read`
 * `delete`
+* `exists?`
 * `clear`
 
 #### fetch
@@ -170,6 +171,21 @@ store.read("foo") # => "bar"
 
 store.clear
 store.read("foo") # => nil
+```
+
+#### exists?
+
+Checks if a key exists in the cache. Returns `true` if the key exists and has not expired, `false` otherwise.
+
+```crystal
+store = Cache::MemoryStore(String).new(12.hours)
+
+store.write("foo", "bar")
+store.exists?("foo") # => true
+store.exists?("baz") # => false
+
+store.delete("foo")
+store.exists?("foo") # => false
 ```
 
 ### Memory
