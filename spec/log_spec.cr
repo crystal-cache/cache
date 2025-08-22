@@ -6,7 +6,7 @@ describe Cache::Log do
       log_backend = Log::IOBackend.new(write)
       Log.builder.bind "cache.*", :debug, log_backend
 
-      store = Cache::MemoryStore(String, String).new(expires_in: 1.second)
+      store = Cache::MemoryStore(String).new(expires_in: 1.second)
 
       store.fetch("foo") { "bar" }
       store.delete("foo")

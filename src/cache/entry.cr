@@ -7,7 +7,7 @@ module Cache
 
     @expires_at : Time
 
-    getter value
+    getter value : V
     getter expires_at
 
     def initialize(@value : V, expires_in : Time::Span = Time::Span::ZERO)
