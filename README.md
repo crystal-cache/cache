@@ -93,12 +93,12 @@ under the `/src/cache/stores` directory, e.g.
 
 All store implementations support:
 
-* `fetch`
-* `write`
-* `read`
-* `delete`
-* `exists?`
-* `clear`
+* `fetch` - Fetch data with fallback block
+* `write` - Write data to cache
+* `read` - Read data from cache
+* `delete` - Delete a specific key
+* `exists?` - Check if key exists
+* `clear` - Clear all cache entries
 
 #### fetch
 
@@ -113,6 +113,20 @@ All caches support auto-expiring content after a specified number of seconds.
 This value can be specified as an option to the constructor (in which case all entries will be affected),
 or it can be supplied to the `fetch` or `write` method to effect just one entry.
 
+```crystal
+store = Cache::MemoryStore(String).new(expires_in: 1.hour)
+
+# Basic usage with block
+value = store.fetch("key") do
+  "default_value"
+end
+
+# With custom expiration for this specific entry
+value = store.fetch("key", expires_in: 10.minutes) do
+  "value_with_custom_expiry"
+end
+```
+
 #### write
 
 Writes the `value` to the cache, with the `key` (which must be a string).
@@ -124,7 +138,11 @@ Optional `expires_in` will set an expiration time on the `key`.
 ```crystal
 store = Cache::MemoryStore(String).new(12.hours)
 
+# Basic write
 store.write("foo", "bar")
+
+# With custom expiration
+store.write("temp_data", "value", expires_in: 5.minutes)
 ```
 
 #### read
@@ -143,7 +161,7 @@ store.read("foo") # => "bar"
 
 #### delete
 
-Deletes an entry in the cache using the given `key` (which must be a string). Returns `true` if an entry is deleted.
+Deletes an entry in the cache using the given `key` (which must be a string). Returns `true` if an entry is deleted, `false` if the key didn't exist.
 
 > Options are passed to the underlying cache implementation.
 
@@ -155,11 +173,14 @@ store.read("foo") # => "bar"
 
 store.delete("foo") # => true
 store.read("foo") # => nil
+
+# Deleting non-existent key
+store.delete("nonexistent") # => false
 ```
 
 #### clear
 
-Deletes all items from the cache.
+Deletes all items from the cache. This operation is irreversible and will remove all cached data.
 
 > Options are passed to the underlying cache implementation.
 
@@ -167,10 +188,13 @@ Deletes all items from the cache.
 store = Cache::MemoryStore(String).new(12.hours)
 
 store.write("foo", "bar")
-store.read("foo") # => "bar"
+store.write("baz", "qux")
+store.keys.size # => 2
 
 store.clear
+store.keys.size # => 0
 store.read("foo") # => nil
+store.read("baz") # => nil
 ```
 
 #### exists?
