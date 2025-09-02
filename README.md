@@ -1,10 +1,10 @@
 # Caché
 
-A key/value store where pairs can expire after a specified interval
-
 ![Crystal CI](https://github.com/crystal-cache/cache/workflows/Crystal%20CI/badge.svg)
 [![GitHub release](https://img.shields.io/github/release/crystal-cache/cache.svg)](https://github.com/crystal-cache/cache/releases)
 [![License](https://img.shields.io/github/license/crystal-cache/cache.svg)](https://github.com/crystal-cache/cache/blob/main/LICENSE)
+
+A key/value store where pairs can expire after a specified interval. Keys are always strings, and values can be any serializable Crystal type.
 
 ## Installation
 
@@ -33,7 +33,7 @@ require "http/client"
 require "json"
 require "cache"
 
-cache = Cache::MemoryStore(String, String).new(expires_in: 30.minutes)
+cache = Cache::MemoryStore(String).new(expires_in: 30.minutes)
 github_client = HTTP::Client.new(URI.parse("https://api.github.com"))
 
 # Define how an object is mapped to JSON.
@@ -69,6 +69,8 @@ user.id # => 6539796
 
 ## Usage
 
+> **Note**: The cache API has been updated in version 1.0.0. Keys are now always strings, and the store interface uses a single type parameter `Store(V)` where `V` is the value type. The previous `Store(K, V)` interface has been removed.
+
 ### Available stores
 
 * [x] Null store
@@ -89,17 +91,18 @@ under the `/src/cache/stores` directory, e.g.
 
 ### Commands
 
-All store's implementations should support:
+All store implementations support:
 
-* `fetch`
-* `write`
-* `read`
-* `delete`
-* `clear`
+* `fetch` - Fetch data with fallback block
+* `write` - Write data to cache
+* `read` - Read data from cache
+* `delete` - Delete a specific key
+* `exists?` - Check if key exists
+* `clear` - Clear all cache entries
 
 #### fetch
 
-Fetches data from the cache, using the given `key`. If there is data in the cache
+Fetches data from the cache, using the given `key` (which must be a string). If there is data in the cache
 with the given `key`, then that data is returned.
 
 If there is no such data in the cache, then a `block` will be passed the `key`
@@ -110,29 +113,47 @@ All caches support auto-expiring content after a specified number of seconds.
 This value can be specified as an option to the constructor (in which case all entries will be affected),
 or it can be supplied to the `fetch` or `write` method to effect just one entry.
 
+```crystal
+store = Cache::MemoryStore(String).new(expires_in: 1.hour)
+
+# Basic usage with block
+value = store.fetch("key") do
+  "default_value"
+end
+
+# With custom expiration for this specific entry
+value = store.fetch("key", expires_in: 10.minutes) do
+  "value_with_custom_expiry"
+end
+```
+
 #### write
 
-Writes the `value` to the cache, with the `key`.
+Writes the `value` to the cache, with the `key` (which must be a string).
 
 Optional `expires_in` will set an expiration time on the `key`.
 
 > Options are passed to the underlying cache implementation.
 
 ```crystal
-store = Cache::MemoryStore(String, String).new(12.hours)
+store = Cache::MemoryStore(String).new(12.hours)
 
+# Basic write
 store.write("foo", "bar")
+
+# With custom expiration
+store.write("temp_data", "value", expires_in: 5.minutes)
 ```
 
 #### read
 
-Reads data from the cache, using the given `key`.
+Reads data from the cache, using the given `key` (which must be a string).
 
 If there is data in the cache with the given `key`, then that data is returned.
 Otherwise, `nil` is returned.
 
 ```crystal
-store = Cache::MemoryStore(String, String).new(12.hours)
+store = Cache::MemoryStore(String).new(12.hours)
 store.write("foo", "bar")
 
 store.read("foo") # => "bar"
@@ -140,34 +161,55 @@ store.read("foo") # => "bar"
 
 #### delete
 
-Deletes an entry in the cache. Returns `true` if an entry is deleted.
+Deletes an entry in the cache using the given `key` (which must be a string). Returns `true` if an entry is deleted, `false` if the key didn't exist.
 
 > Options are passed to the underlying cache implementation.
 
 ```crystal
-store = Cache::MemoryStore(String, String).new(12.hours)
+store = Cache::MemoryStore(String).new(12.hours)
 
 store.write("foo", "bar")
 store.read("foo") # => "bar"
 
 store.delete("foo") # => true
 store.read("foo") # => nil
+
+# Deleting non-existent key
+store.delete("nonexistent") # => false
 ```
 
 #### clear
 
-Deletes all items from the cache.
+Deletes all items from the cache. This operation is irreversible and will remove all cached data.
 
 > Options are passed to the underlying cache implementation.
 
 ```crystal
-store = Cache::MemoryStore(String, String).new(12.hours)
+store = Cache::MemoryStore(String).new(12.hours)
 
 store.write("foo", "bar")
-store.read("foo") # => "bar"
+store.write("baz", "qux")
+store.keys.size # => 2
 
 store.clear
+store.keys.size # => 0
 store.read("foo") # => nil
+store.read("baz") # => nil
+```
+
+#### exists?
+
+Checks if a key exists in the cache. Returns `true` if the key exists and has not expired, `false` otherwise.
+
+```crystal
+store = Cache::MemoryStore(String).new(12.hours)
+
+store.write("foo", "bar")
+store.exists?("foo") # => true
+store.exists?("baz") # => false
+
+store.delete("foo")
+store.exists?("foo") # => false
 ```
 
 ### Memory
@@ -178,19 +220,19 @@ same process.
 Can store any serializable Crystal object.
 
 ```crystal
-cache = Cache::MemoryStore(String, Hash(String | Int32)).new(expires_in: 1.minute)
+cache = Cache::MemoryStore(Hash(String | Int32)).new(expires_in: 1.minute)
 cache.fetch("data_key") do
   {"name" => "John", "age" => 18}
 end
 ```
 
-Cached data for `MemoryStore(String, String)` are compressed by default.
+Cached data for `MemoryStore(String)` are compressed by default.
 To turn off compression, pass `compress: false` to the initializer.
 
-For another type of keys `compress` option ignored.
+For other value types, the `compress` option is ignored.
 
 ```crystal
-cache = Cache::MemoryStore(String, String).new(expires_in: 1.minute, compress: false)
+cache = Cache::MemoryStore(String).new(expires_in: 1.minute, compress: false)
 cache.fetch("today") do
   Time.utc.day_of_week
 end
@@ -203,20 +245,20 @@ A cache store implementation which stores everything on the filesystem.
 ```crystal
 cache_path = "#{__DIR__}/cache"
 
-cache = Cache::FileStore(String, String).new(expires_in: 12.hours, cache_path: cache_path)
+cache = Cache::FileStore(String).new(expires_in: 12.hours, cache_path: cache_path)
 
 cache.fetch("today") do
   Time.utc.day_of_week
 end
 ```
 
-Cached data for `FileStore(String, String)` are not compressed by default.
+Cached data for `FileStore(String)` are not compressed by default.
 To enable compression, pass `compress: true` to the initializer.
 
-For another type of keys `compress` option ignored.
+For other value types, the `compress` option is ignored.
 
 ```crystal
-cache = Cache::FileStore(String, String).new(expires_in: 12.hours, cache_path: cache_path, compress: true)
+cache = Cache::FileStore(String).new(expires_in: 12.hours, cache_path: cache_path, compress: true)
 cache.fetch("today") do
   Time.utc.day_of_week
 end
@@ -229,7 +271,7 @@ development and test environments where you don't want caching turned on but
 need to go through the caching interface.
 
 ```crystal
-cache = Cache::NullStore(String, String).new(expires_in: 1.minute)
+cache = Cache::NullStore(String).new(expires_in: 1.minute)
 cache.fetch("today") do
   Time.utc.day_of_week
 end

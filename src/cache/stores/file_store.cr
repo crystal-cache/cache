@@ -4,16 +4,16 @@ require "file_utils"
 module Cache
   # A cache store implementation which stores everything on the filesystem.
   #
-  # Cached data are not compressed by default. To enable compression, pass `compress: true` to the initializer.
+  # Cached data are not compressed by default for String values. To enable compression, pass `compress: true` to the initializer.
   #
   # ```
   # cache_path = "#{__DIR__}/cache"
-  # store = Cache::FileStore(String, String).new(expires_in: 12.hours, cache_path: cache_path)
+  # store = Cache::FileStore(String).new(expires_in: 12.hours, cache_path: cache_path)
   # cache.fetch("today") do
   #   Time.utc.day_of_week
   # end
   # ```
-  struct FileStore(K, V) < Store(K, V)
+  struct FileStore(V) < Store(V)
     EXCLUDED_DIRS = [".", ".."]
 
     property cache_path
@@ -21,10 +21,10 @@ module Cache
     def initialize(@expires_in : Time::Span, @cache_path : String, @compress : Bool = false)
     end
 
-    private def write_impl(key : K, value : V, *, expires_in = @expires_in)
+    private def write_impl(key : String, value : V, *, expires_in = @expires_in)
       all_keys << key
 
-      {% if V.is_a?(String) %}
+      {% if V == String %}
         value = Cache::DataCompressor.deflate(value) if @compress
       {% end %}
 
@@ -35,7 +35,7 @@ module Cache
       File.write(file, entry.to_yaml)
     end
 
-    private def read_impl(key : K)
+    private def read_impl(key : String)
       if entry = entry_for(key)
         if entry.expired?
           delete_impl(key)
@@ -44,7 +44,7 @@ module Cache
         else
           value = entry.value
 
-          {% if V.is_a?(String) %}
+          {% if V == String %}
             value = Cache::DataCompressor.inflate(value) if @compress
           {% end %}
 
@@ -55,14 +55,14 @@ module Cache
       end
     end
 
-    private def delete_impl(key : K) : Bool
+    private def delete_impl(key : String) : Bool
       all_keys.delete(key)
       File.delete(key_file(key))
 
       true
     end
 
-    private def exists_impl(key : K) : Bool
+    private def exists_impl(key : String) : Bool
       if entry = entry_for(key)
         if entry.expired?
           delete_impl(key)
@@ -87,7 +87,7 @@ module Cache
       FileUtils.rm_r(files)
     end
 
-    private def entry_for(key : K)
+    private def entry_for(key : String)
       file = key_file(key)
 
       return nil unless File.exists?(file)
@@ -100,8 +100,8 @@ module Cache
       FileUtils.mkdir_p(path) unless File.exists?(path)
     end
 
-    private def key_file(key : K)
-      File.join(@cache_path, key)
+    private def key_file(key : String)
+      File.join(@cache_path, key.to_s)
     end
   end
 end

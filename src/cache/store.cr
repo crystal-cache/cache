@@ -9,18 +9,18 @@ module Cache
   # See the classes
   # under the `/src/cache/stores` directory, e.g.
   # All implementations should support method , `write`, `read`, `fetch`, and `delete`.
-  abstract struct Store(K, V)
-    @keys : Set(K) = Set(K).new
+  abstract struct Store(V)
+    @keys : Set(String) = Set(String).new
     @namespace : String? = nil
     @expires_in : Time::Span = Time::Span::ZERO
 
     # Returns only non-expired keys in the cache.
-    def keys : Set(K)
+    def keys : Set(String)
       @keys.select { |key| exists?(key) }.to_set
     end
 
     # Returns all keys in the cache, including expired ones (for internal use).
-    private def all_keys : Set(K)
+    private def all_keys : Set(String)
       @keys
     end
 
@@ -35,13 +35,13 @@ module Cache
     # or it can be supplied to the `fetch` or `write` method to effect just one entry.
     #
     # ```
-    # cache = Cache::MemoryStore(String, String).new(expires_in: 1.hours)
+    # cache = Cache::MemoryStore(String).new(expires_in: 1.hours)
     # # Set a lower value for one entry
     # cache.fetch("today", expires_in: 10.minutes) do
     #   Time.utc.day_of_week
     # end
     # ```
-    def fetch(key : K, *, expires_in = @expires_in, &)
+    def fetch(key : String, *, expires_in = @expires_in, &)
       value = read(key)
       return value unless value.nil?
 
@@ -52,7 +52,7 @@ module Cache
     end
 
     # :nodoc:
-    def fetch(key : K)
+    def fetch(key : String)
       read(key)
     end
 
@@ -61,7 +61,7 @@ module Cache
     # Optional `expires_in` will set an expiration time on the `key`.
     #
     # Options are passed to the underlying cache implementation.
-    def write(key : K, value : V, *, expires_in = @expires_in)
+    def write(key : String, value : V, *, expires_in = @expires_in)
       key = namespace_key(key)
 
       instrument(:write, key) do
@@ -73,7 +73,7 @@ module Cache
     #
     # If there is data in the cache with the given `key`, then that data is returned.
     # Otherwise, `nil` is returned.
-    def read(key : K)
+    def read(key : String)
       key = namespace_key(key)
 
       instrument(:read, key) do
@@ -81,7 +81,7 @@ module Cache
       end
     end
 
-    def delete(key : K) : Bool
+    def delete(key : String) : Bool
       key = namespace_key(key)
 
       instrument(:delete, key) do
@@ -89,10 +89,12 @@ module Cache
       end
     end
 
-    def exists?(key : K) : Bool
+    def exists?(key : String) : Bool
       key = namespace_key(key)
 
-      exists_impl(key)
+      instrument(:exists, key) do
+        exists_impl(key)
+      end
     end
 
     private def instrument(operation, key, &)
@@ -102,21 +104,21 @@ module Cache
     end
 
     # Implementation of writing an entry.
-    private abstract def write_impl(key : K, value : V, *, expires_in)
+    private abstract def write_impl(key : String, value : V, *, expires_in)
 
     # Implementation of reading an entry.
     # Returns the entry, if it existed, `nil` otherwise.
-    private abstract def read_impl(key : K)
+    private abstract def read_impl(key : String)
 
     # Deletes an entry in the cache. Returns `true` if an entry is deleted.
     #
     # Options are passed to the underlying cache implementation.
-    private abstract def delete_impl(key : K) : Bool
+    private abstract def delete_impl(key : String) : Bool
 
     # Returns true if the cache contains an entry for the given key.
     #
     # Options are passed to the underlying cache implementation.
-    private abstract def exists_impl(key : K) : Bool
+    private abstract def exists_impl(key : String) : Bool
 
     # Deletes all entries from the cache.
     #
@@ -128,7 +130,7 @@ module Cache
     end
 
     # Increment an integer value in the cache.
-    def increment(key : K, amount = 1)
+    def increment(key : String, amount = 1)
       if num = read(key)
         return unless num.is_a?(Int)
 
@@ -138,7 +140,7 @@ module Cache
     end
 
     # Decrement an integer value in the cache.
-    def decrement(key : K, amount = 1)
+    def decrement(key : String, amount = 1)
       if num = read(key)
         return unless num.is_a?(Int)
 
@@ -147,7 +149,7 @@ module Cache
       end
     end
 
-    private def namespace_key(key : K) : String | K
+    private def namespace_key(key : String) : String
       if @namespace
         "#{@namespace}:#{key}"
       else
