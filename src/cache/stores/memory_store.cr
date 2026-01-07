@@ -42,8 +42,6 @@ module Cache
 
           value
         end
-      else
-        nil
       end
     end
 

@@ -50,8 +50,6 @@ module Cache
 
           value
         end
-      else
-        nil
       end
     end
 
@@ -90,7 +88,7 @@ module Cache
     private def entry_for(key : String)
       file = key_file(key)
 
-      return nil unless File.exists?(file)
+      return unless File.exists?(file)
 
       Entry(V).from_yaml(File.read(file))
     end
