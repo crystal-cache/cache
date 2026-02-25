@@ -12,5 +12,6 @@ development_dependencies:
     branch: master
   timecop:
     github: crystal-community/timecop.cr
+    branch: master
 
 license: MIT
