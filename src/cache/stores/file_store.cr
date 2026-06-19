@@ -84,9 +84,9 @@ module Cache
       return unless Dir.exists?(cache_path)
 
       root_dirs = Dir.entries(cache_path)
-      root_dirs = root_dirs.reject { |f| EXCLUDED_DIRS.includes?(f) }
+      root_dirs = root_dirs.reject { |entry| EXCLUDED_DIRS.includes?(entry) }
 
-      files = root_dirs.map { |f| File.join(cache_path, f) }
+      files = root_dirs.map { |entry| File.join(cache_path, entry) }
 
       FileUtils.rm_r(files)
     end
