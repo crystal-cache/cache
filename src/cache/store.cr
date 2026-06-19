@@ -56,7 +56,7 @@ module Cache
       read(key)
     end
 
-    # Writes the `value` to the cache, with the `key`.
+    # Writes the `value` to the cache, with the `key`, and returns the value.
     #
     # Optional `expires_in` will set an expiration time on the `key`.
     #
@@ -67,6 +67,8 @@ module Cache
       instrument(:write, key) do
         write_impl(key, value, expires_in: expires_in)
       end
+
+      value
     end
 
     # Reads data from the cache, using the given `key`.
@@ -130,22 +132,28 @@ module Cache
     end
 
     # Increment an integer value in the cache.
+    #
+    # Returns the updated value, or `nil` when the key is missing or not an integer.
     def increment(key : String, amount = 1)
       if num = read(key)
         return unless num.is_a?(Int)
 
         num += amount
         write(key, num)
+        num
       end
     end
 
     # Decrement an integer value in the cache.
+    #
+    # Returns the updated value, or `nil` when the key is missing or not an integer.
     def decrement(key : String, amount = 1)
       if num = read(key)
         return unless num.is_a?(Int)
 
         num -= amount
         write(key, num)
+        num
       end
     end
 

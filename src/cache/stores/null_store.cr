@@ -9,7 +9,6 @@ module Cache
     end
 
     private def write_impl(key : String, value : V, *, expires_in = @expires_in)
-      @keys << key
     end
 
     private def read_impl(key : String)
@@ -17,13 +16,11 @@ module Cache
     end
 
     private def delete_impl(key : String) : Bool
-      @keys.delete(key)
-
-      true
+      false
     end
 
     private def exists_impl(key : String) : Bool
-      @keys.includes?(key)
+      false
     end
 
     def clear

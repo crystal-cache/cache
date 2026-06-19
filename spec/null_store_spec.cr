@@ -22,6 +22,13 @@ describe Cache do
       value.should eq("bar")
     end
 
+    it "returns the value from write" do
+      store = Cache::NullStore(String).new(12.hours)
+
+      store.write("foo", "bar").should eq("bar")
+      store.read("foo").should be_nil
+    end
+
     it "delete from cache" do
       store = Cache::NullStore(String).new(12.hours)
 
@@ -29,10 +36,25 @@ describe Cache do
       value.should eq("bar")
 
       result = store.delete("foo")
-      result.should be_true
+      result.should be_false
 
       value = store.read("foo")
       value.should be_nil
+    end
+
+    it "does not report entries as existing" do
+      store = Cache::NullStore(String).new(12.hours)
+
+      store.write("foo", "bar")
+
+      store.exists?("foo").should be_false
+      store.keys.should be_empty
+    end
+
+    it "returns false when deleting a missing key" do
+      store = Cache::NullStore(String).new(12.hours)
+
+      store.delete("missing").should be_false
     end
 
     it "deletes all items from the cache" do
