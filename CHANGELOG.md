@@ -2,6 +2,15 @@
 
 ## [...]
 
+## 1.1.0
+
+* Harden `FileStore` key handling by storing entries under SHA256-derived filenames
+* Make `FileStore#delete` return `false` for missing keys
+* Make `FileStore#clear` safe when the cache directory does not exist
+* **breaking change** Make `NullStore` fully stateless: `exists?` always returns `false` and `delete` always returns `false`
+* Clarify shared store return values
+* Fix documentation examples and minor wording issues
+
 ## 1.0.0
 
 * **breaking change** Simplified store interface: `Store(K, V)` → `Store(V)` where keys are always strings https://github.com/crystal-cache/cache/pull/44
