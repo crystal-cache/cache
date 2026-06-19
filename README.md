@@ -99,6 +99,20 @@ All store implementations support:
 * `delete` - Delete a specific key
 * `exists?` - Check if key exists
 * `clear` - Clear all cache entries
+* `increment` - Increment an integer value
+* `decrement` - Decrement an integer value
+
+#### Return values
+
+The shared store methods return:
+
+* `fetch` returns the cached value, or the block value after writing it.
+* `write` returns the written value.
+* `read` returns the cached value, or `nil` for a missing or expired key.
+* `delete` returns `true` when an entry is deleted, `false` when the key does not exist.
+* `exists?` returns `true` when a non-expired entry exists, `false` otherwise.
+* `increment` and `decrement` return the updated integer value, or `nil` when the key is missing or the cached value is not an integer.
+* `clear` removes entries; its return value should not be used.
 
 #### fetch
 
@@ -212,6 +226,19 @@ store.delete("foo")
 store.exists?("foo") # => false
 ```
 
+#### increment and decrement
+
+Updates an integer value in the cache. If the key is missing or the value is not an integer, the operation returns `nil`.
+
+```crystal
+store = Cache::MemoryStore(Int32).new(12.hours)
+
+store.write("count", 1)
+store.increment("count") # => 2
+store.decrement("count") # => 1
+store.increment("missing") # => nil
+```
+
 ### Memory
 
 A cache store implementation which stores everything into memory in the
@@ -269,6 +296,8 @@ end
 A cache store implementation which doesn't actually store anything. Useful in
 development and test environments where you don't want caching turned on but
 need to go through the caching interface.
+
+`NullStore#read` always returns `nil`, `NullStore#exists?` always returns `false`, and `NullStore#delete` returns `false`.
 
 ```crystal
 cache = Cache::NullStore(String).new(expires_in: 1.minute)

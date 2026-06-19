@@ -104,7 +104,7 @@ describe Cache do
 
         it "write" do
           store = Cache::MemoryStore(String).new(expires_in: 12.hours, compress: compress)
-          store.write("foo", "bar", expires_in: 1.minute)
+          store.write("foo", "bar", expires_in: 1.minute).should eq("bar")
 
           value = store.fetch("foo") { "baz" }
           value.should eq("bar")
@@ -195,7 +195,7 @@ describe Cache do
           store = Cache::MemoryStore(Int32).new(expires_in: 12.hours, compress: compress)
 
           store.write("num", 1)
-          store.increment("num", 1)
+          store.increment("num", 1).should eq(2)
 
           value = store.read("num")
 
@@ -206,11 +206,19 @@ describe Cache do
           store = Cache::MemoryStore(Int32).new(expires_in: 12.hours, compress: compress)
 
           store.write("num", 2)
-          store.decrement("num", 1)
+          store.decrement("num", 1).should eq(1)
 
           value = store.read("num")
 
           value.should eq(1)
+        end
+
+        it "#increment returns nil for missing and non-integer values" do
+          store = Cache::MemoryStore(String | Int32).new(expires_in: 12.hours, compress: compress)
+
+          store.increment("missing", 1).should be_nil
+          store.write("string", "value")
+          store.increment("string", 1).should be_nil
         end
       end
     end
