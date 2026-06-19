@@ -132,12 +132,12 @@ describe Cache do
 
         Timecop.travel(time + 2.seconds)
 
-        File.exists?(File.join(cache_path, "foo")).should be_true
+        Dir.glob(File.join(cache_path, "*")).size.should eq(1)
 
         value = store.read("foo")
         value.should be_nil
 
-        File.exists?(File.join(cache_path, "foo")).should be_false
+        Dir.glob(File.join(cache_path, "*")).should be_empty
       end
     end
 
@@ -146,14 +146,20 @@ describe Cache do
 
       value = store.fetch("foo") { "bar" }
       value.should eq("bar")
-      File.exists?(File.join(cache_path, "foo")).should be_true
+      Dir.glob(File.join(cache_path, "*")).size.should eq(1)
 
       result = store.delete("foo")
       result.should be_true
 
       value = store.read("foo")
       value.should be_nil
-      File.exists?(File.join(cache_path, "foo")).should be_false
+      Dir.glob(File.join(cache_path, "*")).should be_empty
+    end
+
+    it "returns false when deleting a missing key" do
+      store = Cache::FileStore(String).new(12.hours, cache_path: cache_path)
+
+      store.delete("missing").should be_false
     end
 
     it "deletes all items from the cache" do
@@ -161,11 +167,34 @@ describe Cache do
 
       value = store.fetch("foo") { "bar" }
       value.should eq("bar")
-      File.exists?(File.join(cache_path, "foo")).should be_true
+      Dir.glob(File.join(cache_path, "*")).size.should eq(1)
 
       store.clear
 
-      File.exists?(File.join(cache_path, "foo")).should be_false
+      Dir.glob(File.join(cache_path, "*")).should be_empty
+    end
+
+    it "clears an empty cache" do
+      store = Cache::FileStore(String).new(12.hours, cache_path: cache_path)
+
+      store.clear
+    end
+
+    it "stores keys safely inside the cache path" do
+      store = Cache::FileStore(String).new(12.hours, cache_path: cache_path)
+
+      keys = ["../outside", "/tmp/cache-key", "nested/key"]
+
+      keys.each do |key|
+        store.write(key, "value")
+        store.read(key).should eq("value")
+      end
+
+      File.exists?(File.join(__DIR__, "outside")).should be_false
+      File.exists?("/tmp/cache-key").should be_false
+      Dir.glob(File.join(cache_path, "**", "*")).each do |file|
+        File.file?(file).should be_true
+      end
     end
 
     it "#exists?" do

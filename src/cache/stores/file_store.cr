@@ -1,5 +1,6 @@
 require "../store"
 require "file_utils"
+require "digest/sha256"
 
 module Cache
   # A cache store implementation which stores everything on the filesystem.
@@ -55,8 +56,11 @@ module Cache
 
     private def delete_impl(key : String) : Bool
       all_keys.delete(key)
-      File.delete(key_file(key))
+      file = key_file(key)
 
+      return false unless File.exists?(file)
+
+      File.delete(file)
       true
     end
 
@@ -76,6 +80,8 @@ module Cache
 
     def clear
       clear_keys
+
+      return unless Dir.exists?(cache_path)
 
       root_dirs = Dir.entries(cache_path)
       root_dirs = root_dirs.reject { |f| EXCLUDED_DIRS.includes?(f) }
@@ -99,7 +105,7 @@ module Cache
     end
 
     private def key_file(key : String)
-      File.join(@cache_path, key.to_s)
+      File.join(@cache_path, Digest::SHA256.hexdigest(key))
     end
   end
 end
