@@ -10,8 +10,8 @@ module Cache
   # ```
   # cache_path = "#{__DIR__}/cache"
   # store = Cache::FileStore(String).new(expires_in: 12.hours, cache_path: cache_path)
-  # cache.fetch("today") do
-  #   Time.utc.day_of_week
+  # store.fetch("today") do
+  #   Time.utc.day_of_week.to_s
   # end
   # ```
   struct FileStore(V) < Store(V)

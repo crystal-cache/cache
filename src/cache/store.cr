@@ -8,7 +8,7 @@ module Cache
   #
   # See the classes
   # under the `/src/cache/stores` directory, e.g.
-  # All implementations should support method , `write`, `read`, `fetch`, and `delete`.
+  # All implementations should support `write`, `read`, `fetch`, `delete`, `exists?`, and `clear`.
   abstract struct Store(V)
     @keys : Set(String) = Set(String).new
     @namespace : String? = nil
@@ -32,13 +32,13 @@ module Cache
     # Setting `:expires_in` will set an expiration time on the cache.
     # All caches support auto-expiring content after a specified number of seconds.
     # This value can be specified as an option to the constructor (in which case all entries will be affected),
-    # or it can be supplied to the `fetch` or `write` method to effect just one entry.
+    # or it can be supplied to the `fetch` or `write` method to affect just one entry.
     #
     # ```
     # cache = Cache::MemoryStore(String).new(expires_in: 1.hours)
     # # Set a lower value for one entry
     # cache.fetch("today", expires_in: 10.minutes) do
-    #   Time.utc.day_of_week
+    #   Time.utc.day_of_week.to_s
     # end
     # ```
     def fetch(key : String, *, expires_in = @expires_in, &)

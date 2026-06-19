@@ -9,7 +9,7 @@ module Cache
   # ```
   # cache = Cache::MemoryStore(String).new(expires_in: 1.minute)
   # cache.fetch("today") do
-  #   Time.utc.day_of_week
+  #   Time.utc.day_of_week.to_s
   # end
   # ```
   struct MemoryStore(V) < Store(V)

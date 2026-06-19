@@ -21,12 +21,12 @@ dependencies:
 Caching means to store content generated during the request-response cycle
 and to reuse it when responding to similar requests.
 
-The first time the result is returned from the query it is stored in the query cache (in memory)
-and the second time it's pulled from memory.
+The first time the result is returned from the query it is stored in the query cache (in memory),
+and the second time it is pulled from memory.
 
-Memory cache can store any serializable Crystal objects.
+Memory cache can store any serializable Crystal object.
 
-Next example show how to get a single Github user and cache the result in memory.
+The next example shows how to get a single GitHub user and cache the result in memory.
 
 ```crystal
 require "http/client"
@@ -47,7 +47,7 @@ end
 username = "crystal-lang"
 
 # First request.
-# Getting data from Github and write it to cache.
+# Getting data from GitHub and writing it to cache.
 user_json = cache.fetch("user_#{username}") do
   response = github_client.get("/users/#{username}")
   User.from_json(response.body).to_json
@@ -125,7 +125,7 @@ and executed in the event of a cache miss.
 Setting `:expires_in` will set an expiration time on the cache.
 All caches support auto-expiring content after a specified number of seconds.
 This value can be specified as an option to the constructor (in which case all entries will be affected),
-or it can be supplied to the `fetch` or `write` method to effect just one entry.
+or it can be supplied to the `fetch` or `write` method to affect just one entry.
 
 ```crystal
 store = Cache::MemoryStore(String).new(expires_in: 1.hour)
@@ -247,7 +247,7 @@ same process.
 Can store any serializable Crystal object.
 
 ```crystal
-cache = Cache::MemoryStore(Hash(String | Int32)).new(expires_in: 1.minute)
+cache = Cache::MemoryStore(Hash(String, String | Int32)).new(expires_in: 1.minute)
 cache.fetch("data_key") do
   {"name" => "John", "age" => 18}
 end
@@ -261,7 +261,7 @@ For other value types, the `compress` option is ignored.
 ```crystal
 cache = Cache::MemoryStore(String).new(expires_in: 1.minute, compress: false)
 cache.fetch("today") do
-  Time.utc.day_of_week
+  Time.utc.day_of_week.to_s
 end
 ```
 
@@ -275,7 +275,7 @@ cache_path = "#{__DIR__}/cache"
 cache = Cache::FileStore(String).new(expires_in: 12.hours, cache_path: cache_path)
 
 cache.fetch("today") do
-  Time.utc.day_of_week
+  Time.utc.day_of_week.to_s
 end
 ```
 
@@ -287,7 +287,7 @@ For other value types, the `compress` option is ignored.
 ```crystal
 cache = Cache::FileStore(String).new(expires_in: 12.hours, cache_path: cache_path, compress: true)
 cache.fetch("today") do
-  Time.utc.day_of_week
+  Time.utc.day_of_week.to_s
 end
 ```
 
@@ -302,13 +302,13 @@ need to go through the caching interface.
 ```crystal
 cache = Cache::NullStore(String).new(expires_in: 1.minute)
 cache.fetch("today") do
-  Time.utc.day_of_week
+  Time.utc.day_of_week.to_s
 end
 ```
 
 ## Logging
 
-For activation, simply setup the log to `:debug` level:
+To enable logging, set the log level to `:debug`:
 
 ```crystal
 Log.builder.bind "cache.*", :debug, Log::IOBackend.new
